@@ -1,0 +1,2049 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>APA Master</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#0B1120;color:#F1F5F9;min-height:100vh}
+button,input,select,textarea{font-family:'Inter',sans-serif}
+a{text-decoration:none}
+/* colores */
+:root{
+  --bg:#0B1120;--bg2:#111827;--sur:#1A2538;--sur2:#243044;
+  --brd:#2A3A52;--acc:#0EA5E9;--grn:#22C55E;--red:#EF4444;
+  --yel:#F59E0B;--pur:#8B5CF6;--t2:#94A3B8;--t3:#64748B;
+  --fh:'Nunito',sans-serif
+}
+/* ── AUTH ── */
+#pg-auth{
+  min-height:100vh;display:flex;align-items:flex-start;
+  justify-content:center;padding:24px 16px 40px;
+  background:linear-gradient(135deg,#0B1120 60%,#0f1e38)
+}
+.acard{
+  width:100%;max-width:400px;background:var(--sur);
+  border:1px solid var(--brd);border-radius:16px;padding:28px 24px;
+  margin-top:20px
+}
+.alogo{font-family:var(--fh);font-size:1.7rem;font-weight:900;color:var(--acc);text-align:center;margin-bottom:4px}
+.asub{font-size:.82rem;color:var(--t2);text-align:center;margin-bottom:20px}
+.atabs{display:flex;gap:4px;background:#111827;border-radius:8px;padding:4px;margin-bottom:18px}
+.atab{flex:1;padding:9px;border:none;border-radius:6px;cursor:pointer;font-weight:700;font-size:.88rem;color:var(--t3);background:transparent;transition:all .2s}
+.atab.on{background:var(--acc);color:#fff}
+.fld{margin-bottom:12px}
+.fld label{display:block;font-size:.78rem;font-weight:600;color:var(--t2);margin-bottom:4px}
+.fld input{width:100%;padding:10px 12px;background:#111827;border:1.5px solid var(--brd);border-radius:8px;color:#F1F5F9;font-size:.9rem;outline:none}
+.fld input:focus{border-color:var(--acc)}
+.pwrap{position:relative}
+.pwrap input{padding-right:36px}
+.peye{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:.9rem;color:var(--t3)}
+.ferr{color:var(--red);font-size:.8rem;margin-bottom:8px;min-height:16px;display:block}
+.abtn{width:100%;padding:12px;margin-top:6px;background:linear-gradient(135deg,var(--acc),var(--pur));color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:800;cursor:pointer}
+.abtn:disabled{opacity:.6;cursor:not-allowed}
+/* ── TOASTS ── */
+#toasts{position:fixed;bottom:16px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:6px;pointer-events:none;max-width:280px}
+.toast{padding:10px 14px;border-radius:8px;font-size:.84rem;font-weight:600;opacity:0;transform:translateX(20px);transition:all .3s;word-break:break-word;pointer-events:none}
+.toast.s{background:rgba(34,197,94,.95);color:#fff}
+.toast.e{background:rgba(239,68,68,.95);color:#fff}
+.toast.w{background:rgba(245,158,11,.95);color:#000}
+.toast.i{background:rgba(56,189,248,.95);color:#000}
+.show{opacity:1!important;transform:none!important}
+/* ── APP LAYOUT ── */
+#pg-app{display:none;height:100vh;overflow:hidden}
+.app-wrap{display:flex;height:100%}
+/* sidebar */
+#sidebar{
+  width:230px;flex-shrink:0;background:var(--sur);border-right:1px solid var(--brd);
+  display:flex;flex-direction:column;overflow-y:auto;z-index:50;transition:transform .28s
+}
+.sbrand{padding:14px 16px;font-family:var(--fh);font-size:1rem;font-weight:900;color:var(--acc);border-bottom:1px solid var(--brd)}
+.ssec{padding:9px 16px 2px;font-size:.6rem;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;font-weight:700}
+.sitem{display:flex;align-items:center;gap:9px;padding:9px 13px;margin:2px 7px;border-radius:7px;cursor:pointer;font-size:.86rem;font-weight:600;color:var(--t2);transition:all .15s}
+.sitem:hover{background:var(--sur2);color:#F1F5F9}
+.sitem.on{background:linear-gradient(135deg,var(--acc),var(--pur));color:#fff}
+.sfooter{margin-top:auto;padding:10px;border-top:1px solid var(--brd)}
+.suser{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--sur2);border-radius:8px;cursor:pointer}
+.savatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--acc),var(--pur));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.78rem;color:#fff;flex-shrink:0}
+.sname{font-size:.83rem;font-weight:700}
+.sxp{font-size:.68rem;color:var(--yel)}
+/* body */
+#abody{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+#topbar{height:56px;flex-shrink:0;background:var(--sur);border-bottom:1px solid var(--brd);display:flex;align-items:center;padding:0 16px;gap:10px;z-index:40}
+.hmbg{display:none;background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--t2);padding:4px 8px;border-radius:6px}
+#tbgreet{font-family:var(--fh);font-size:.88rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tbstats{margin-left:auto;display:flex;gap:6px;flex-shrink:0}
+.tbchip{background:var(--sur2);border:1px solid var(--brd);padding:4px 10px;border-radius:20px;font-size:.76rem;font-weight:700;white-space:nowrap}
+/* main */
+#main{flex:1;overflow-y:auto;overflow-x:hidden}
+.view{display:none;padding:20px 24px;animation:fi .2s}
+.view.on{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.vt{font-family:var(--fh);font-size:1.35rem;font-weight:900;margin-bottom:3px}
+.vs{font-size:.85rem;color:var(--t2);margin-bottom:16px}
+/* flex views */
+#v-exercise.on,#v-result.on{display:flex;flex-direction:column}
+#v-guide.on{display:flex;overflow:hidden;height:calc(100vh - 56px);padding:0}
+#v-chatbot.on{display:flex;flex-direction:column;height:calc(100vh - 56px);padding:0;overflow:hidden}
+/* cards / btns */
+.card{background:var(--sur);border:1px solid var(--brd);border-radius:12px;padding:16px}
+.bpri{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 20px;background:linear-gradient(135deg,var(--acc),var(--pur));color:#fff;border:none;border-radius:10px;font-size:.9rem;font-weight:800;cursor:pointer;transition:transform .15s}
+.bpri:hover{transform:translateY(-1px)}
+.bsec{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 14px;background:var(--sur2);color:#F1F5F9;border:1.5px solid var(--brd);border-radius:10px;font-size:.84rem;font-weight:700;cursor:pointer}
+/* dashboard */
+.statrow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.sc{background:var(--sur);border:1px solid var(--brd);border-radius:12px;padding:14px;text-align:center}
+.si{font-size:1.5rem;margin-bottom:4px}.sv{font-family:var(--fh);font-size:1.5rem;font-weight:900}.sl{font-size:.66rem;color:var(--t3);text-transform:uppercase}
+.yel{color:var(--yel)!important}.red{color:var(--red)!important}.grn{color:var(--grn)!important}.acc{color:var(--acc)!important}
+.stitle{font-family:var(--fh);font-size:.92rem;font-weight:800;margin-bottom:7px}
+.pbg{background:#1E293B;border-radius:20px;height:7px;overflow:hidden;margin:6px 0 4px}
+.pfil{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--acc),var(--pur));transition:width .6s}
+.ptxt{font-size:.76rem;color:var(--t3)}
+.ncard{background:linear-gradient(135deg,var(--acc),var(--pur));border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;margin-bottom:4px}
+.ntit{font-family:var(--fh);font-size:.92rem;font-weight:800}
+.qgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+.qb{display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 6px;background:var(--sur);border:1px solid var(--brd);border-radius:10px;cursor:pointer;color:var(--t2);font-size:.74rem;font-weight:600}
+.qb:hover{border-color:var(--acc);color:var(--acc)}
+/* lecciones */
+.lvbl{background:var(--sur);border:1px solid var(--brd);border-radius:12px;overflow:hidden;margin-bottom:8px}
+.lvhd{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--brd)}
+.lve{font-size:1.9rem}.lvn h3{font-family:var(--fh);font-size:.98rem;font-weight:900}.lvn p{font-size:.76rem;color:var(--t2)}
+.ltag{display:inline-block;background:#1E293B;color:var(--t3);font-size:.68rem;padding:1px 8px;border-radius:20px;margin-top:2px}
+.lpb{background:#1E293B;border-radius:20px;height:4px;width:150px;overflow:hidden;margin-top:4px}
+.lpf{height:100%;border-radius:20px}.lpt{font-size:.66rem;color:var(--t3)}
+.llist{padding:7px 10px;display:flex;flex-direction:column;gap:5px}
+.llist.dim{opacity:.35;pointer-events:none}
+.lc{display:flex;align-items:center;gap:9px;padding:9px 11px;background:#111827;border:1.5px solid var(--brd);border-radius:10px;cursor:pointer;transition:all .13s}
+.lc:hover{background:var(--sur2);transform:translateX(2px)}
+.lc.done{border-color:var(--grn);background:rgba(34,197,94,.06)}
+.lc.perf{border-color:var(--yel);background:rgba(245,158,11,.06)}
+.lico{font-size:1.3rem;width:30px;text-align:center;flex-shrink:0}
+.lct{font-weight:700;font-size:.84rem;display:block}.lcx{font-size:.68rem;color:var(--t3);display:block}
+.lbdg{margin-left:auto;width:22px;height:22px;border-radius:50%;background:var(--yel);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;color:#fff}
+.sep{display:flex;align-items:center;gap:8px;padding:3px 16px;color:var(--t3)}
+.sep-l{flex:1;height:1px;background:var(--brd)}
+/* intro */
+.ihero{background:var(--sur);border:1px solid var(--brd);border-radius:12px;padding:22px;text-align:center;margin-bottom:14px}
+.itags{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-bottom:12px}
+.itag{background:var(--sur2);border:1px solid var(--brd);padding:3px 9px;border-radius:20px;font-size:.74rem;font-weight:700}
+.tbox{background:var(--sur);border:1px solid var(--brd);border-radius:12px;padding:16px;margin-bottom:14px}
+.tbox h3{font-family:var(--fh);font-size:.95rem;font-weight:800;margin-bottom:7px}
+.tbox p{color:var(--t2);margin-bottom:7px;line-height:1.7}
+.tbox ul{padding-left:16px;color:var(--t2)}.tbox ul li{margin-bottom:3px;line-height:1.7}
+.tex{background:#111827;border-left:4px solid var(--brd);border-radius:0 8px 8px 0;padding:9px 12px;margin:7px 0;font-size:.84rem;color:var(--t2)}
+.tex.ok{border-color:var(--grn);background:rgba(34,197,94,.07)}
+.tex.bad{border-color:var(--red);background:rgba(239,68,68,.07)}
+.tlb{display:block;font-size:.65rem;font-weight:700;text-transform:uppercase;color:var(--t3);margin-bottom:3px}
+.tth{width:100%;border-collapse:collapse;margin-top:5px;font-size:.78rem}
+.tth th{background:var(--sur2);padding:5px 8px;text-align:left;color:var(--t2);font-weight:600}
+.tth td{padding:5px 8px;color:var(--t2);border-top:1px solid var(--brd)}
+/* ejercicio */
+.extop{display:flex;align-items:center;gap:9px;padding:11px 16px;border-bottom:1px solid var(--brd);background:var(--sur);flex-shrink:0}
+.exclose{background:none;border:none;cursor:pointer;color:var(--t3);font-size:1rem;padding:4px 7px;border-radius:5px}
+.expwrap{flex:1}
+.expbg{background:#1E293B;border-radius:20px;height:5px;overflow:hidden}
+#exbar{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--acc),var(--pur));transition:width .3s}
+.explbl{display:flex;justify-content:space-between;font-size:.66rem;color:var(--t3);margin-top:2px}
+#exhearts{flex-shrink:0;font-size:.95rem}
+.excard{background:var(--sur);border:1px solid var(--brd);border-radius:12px;padding:18px;margin:12px 16px 9px;flex:1}
+#exq{font-family:var(--fh);font-size:1rem;font-weight:700;line-height:1.5;margin-bottom:14px}
+#exopts{display:flex;flex-direction:column;gap:6px}
+.opt{display:flex;align-items:center;gap:8px;padding:10px 12px;background:#111827;border:2px solid var(--brd);border-radius:10px;cursor:pointer;font-size:.84rem;font-weight:600;text-align:left;transition:all .13s;width:100%}
+.opt:hover:not(:disabled){background:var(--sur2);border-color:var(--acc);transform:translateX(2px)}
+.opt:disabled{cursor:not-allowed}
+.opt.ok{background:rgba(34,197,94,.13);border-color:var(--grn)!important;color:var(--grn)}
+.opt.no{background:rgba(239,68,68,.13);border-color:var(--red)!important;color:var(--red)}
+.oltr{width:24px;height:24px;border-radius:50%;background:var(--sur2);display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:800;flex-shrink:0}
+#exfb{padding:11px 14px;margin:0 16px 9px;border-radius:10px;display:flex;gap:9px;align-items:flex-start;flex-shrink:0}
+.fb-ok{background:rgba(34,197,94,.12);border:1px solid var(--grn)}
+.fb-no{background:rgba(239,68,68,.12);border:1px solid var(--red)}
+.fbi{font-size:1.2rem;flex-shrink:0}
+.fbt strong{font-size:.88rem;display:block}.fbt p{font-size:.78rem;color:var(--t2);margin-top:2px}
+#exnxt{display:flex;align-items:center;justify-content:center;margin:0 16px 16px;padding:11px;background:linear-gradient(135deg,#16A34A,var(--acc));color:#fff;border:none;border-radius:10px;font-size:.88rem;font-weight:800;cursor:pointer;flex-shrink:0}
+/* resultado */
+#v-result{padding:20px}
+.rwrap{max-width:440px;margin:0 auto;text-align:center;padding:16px 0}
+.rstars{font-size:1.6rem;margin:5px 0 7px}
+.rtit{font-family:var(--fh);font-size:1.5rem;font-weight:900;margin-bottom:4px}
+.rsts{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin:16px 0}
+.rs{background:var(--sur);border:1px solid var(--brd);border-radius:10px;padding:11px 16px;min-width:95px}
+.rsv{font-family:var(--fh);font-size:1.4rem;font-weight:900}.rsl{font-size:.66rem;color:var(--t3);text-transform:uppercase}
+.rbtns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+/* modo libre */
+.ffilt{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.ffilt select,.ffilt input{padding:7px 10px;background:var(--sur);border:1.5px solid var(--brd);color:#F1F5F9;border-radius:8px;font-size:.83rem;outline:none}
+.ffilt input{flex:1;min-width:120px}.fcnt{font-size:.76rem;color:var(--t3);margin-left:auto}
+.fstart{background:var(--sur);border:1px solid var(--brd);border-radius:12px;padding:32px 18px;text-align:center;max-width:460px;margin:0 auto}
+.ficon{font-size:2.8rem;margin-bottom:9px}
+.fqw{max-width:640px}
+.fqpb{background:#1E293B;border-radius:20px;height:5px;overflow:hidden;margin-bottom:7px}
+.fqpf{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--grn),var(--acc));transition:width .3s}
+.fqmeta{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:.74rem;color:var(--t3)}
+.fqcard{background:var(--sur);border:1px solid var(--brd);border-radius:12px;padding:16px;margin-bottom:9px}
+.fqt{font-family:var(--fh);font-weight:700;font-size:.96rem;margin-bottom:12px;line-height:1.5}
+.fqopts{display:flex;flex-direction:column;gap:6px}
+.fqo{display:flex;align-items:center;gap:7px;padding:8px 11px;background:#111827;border:1.5px solid var(--brd);border-radius:8px;cursor:pointer;font-size:.83rem;font-weight:600;transition:all .12s;width:100%}
+.fqo:hover:not(:disabled){border-color:var(--acc);background:var(--sur2)}
+.fqo:disabled{cursor:not-allowed}
+.fqo.ok{border-color:var(--grn)!important;background:rgba(34,197,94,.1);color:var(--grn)}
+.fqo.no{border-color:var(--red)!important;background:rgba(239,68,68,.1);color:var(--red)}
+.fqol{width:19px;height:19px;border-radius:50%;background:var(--sur2);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;flex-shrink:0}
+.fqfb{display:none;flex-direction:column;gap:2px;padding:8px 11px;border-radius:8px;margin-top:6px}
+.fqfb.sh{display:flex}
+.fqfb.ok{background:rgba(34,197,94,.1);border:1px solid var(--grn);color:var(--grn)}
+.fqfb.no{background:rgba(239,68,68,.1);border:1px solid var(--red);color:var(--red)}
+.fqfb span{font-weight:700;font-size:.81rem}.fqfb p{font-size:.76rem;color:var(--t2);margin:0}
+.fqnxt{display:flex;align-items:center;justify-content:center;width:100%;padding:10px;background:linear-gradient(135deg,var(--grn),var(--acc));color:#fff;border:none;border-radius:10px;font-size:.88rem;font-weight:800;cursor:pointer;margin-top:3px}
+.frcard{background:var(--sur);border:1px solid var(--brd);border-radius:12px;padding:28px 16px;text-align:center;max-width:440px;margin:0 auto}
+/* guia */
+#gnav{width:230px;flex-shrink:0;border-right:1px solid var(--brd);overflow-y:auto;padding:10px 8px;background:var(--sur)}
+#gbody{flex:1;overflow-y:auto;padding:20px 22px}
+.gsrch{width:100%;padding:7px 9px;background:#111827;border:1.5px solid var(--brd);border-radius:7px;color:#F1F5F9;font-size:.78rem;outline:none;margin-bottom:9px}
+.gsrch:focus{border-color:var(--acc)}
+.gcat{font-size:.58rem;text-transform:uppercase;letter-spacing:.7px;color:var(--t3);font-weight:700;padding:6px 5px 2px}
+.glink{display:block;padding:5px 7px;border-radius:6px;cursor:pointer;font-size:.78rem;font-weight:600;color:var(--t2);transition:all .12s;margin-bottom:1px}
+.glink:hover{background:var(--sur2);color:#F1F5F9}.glink.on{background:rgba(56,189,248,.13);color:var(--acc)}
+.ghd{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:11px;border-bottom:1px solid var(--brd)}
+.ghi{font-size:1.9rem}
+.ghcat{display:block;font-size:.62rem;text-transform:uppercase;color:var(--t3);font-weight:700}
+.ghd h2{font-family:var(--fh);font-size:1.2rem;font-weight:900}
+.gbody h2{font-family:var(--fh);font-size:1.05rem;font-weight:800;margin:14px 0 7px}
+.gbody h3{font-size:.88rem;font-weight:700;margin:11px 0 5px;color:var(--acc)}
+.gbody p{color:var(--t2);margin-bottom:7px;line-height:1.7}
+.gbody ul{padding-left:15px;color:var(--t2);margin-bottom:7px}.gbody ul li{margin-bottom:3px;line-height:1.7}
+.gex{background:#111827;border-left:4px solid var(--acc);border-radius:0 7px 7px 0;padding:9px 11px;margin:6px 0;font-size:.83rem;color:var(--t2);line-height:1.7}
+.gtbl{width:100%;border-collapse:collapse;margin:7px 0;font-size:.78rem}
+.gtbl th{background:var(--sur2);padding:6px 9px;text-align:left;font-weight:700;color:var(--t2);border-bottom:1px solid var(--brd)}
+.gtbl td{padding:6px 9px;color:var(--t2);border-bottom:1px solid var(--brd)}
+.gtbl del{color:var(--red);text-decoration:line-through}
+.gnav-btns{display:flex;justify-content:space-between;margin-top:20px;padding-top:12px;border-top:1px solid var(--brd);gap:8px}
+.gnb{padding:7px 12px;background:var(--sur2);border:1px solid var(--brd);border-radius:7px;color:var(--t2);cursor:pointer;font-size:.78rem;font-weight:600}
+.gnb.nxt{background:rgba(56,189,248,.1);border-color:var(--acc);color:var(--acc)}
+/* generador */
+.genlayout{display:grid;grid-template-columns:1fr 290px;gap:14px;max-width:880px}
+.genrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.gfld{margin-bottom:10px}
+.gfld label{display:block;font-size:.76rem;font-weight:600;color:var(--t3);margin-bottom:3px}
+.gfld input,.gfld select,.gfld textarea{width:100%;padding:7px 10px;background:#111827;border:1.5px solid var(--brd);border-radius:7px;color:#F1F5F9;font-size:.86rem;outline:none}
+.gfld input:focus,.gfld select:focus{border-color:var(--acc)}
+#gprev{background:#111827;border:1px solid var(--brd);border-radius:7px;padding:10px;font-size:.83rem;color:var(--t2);line-height:1.8;min-height:60px;margin-bottom:10px}
+/* detector */
+#detinput{width:100%;height:95px;padding:10px 12px;background:#111827;border:1.5px solid var(--brd);border-radius:8px;color:#F1F5F9;font-size:.88rem;resize:vertical;outline:none;line-height:1.6;margin:9px 0}
+#detinput:focus{border-color:var(--acc)}
+.derr{background:var(--sur);border-radius:10px;padding:11px 13px;margin-bottom:7px;border-left:4px solid var(--red)}
+.derr.w{border-left-color:var(--yel)}
+.derr-t{font-weight:700;font-size:.86rem;margin-bottom:4px}
+.derr-f{font-size:.8rem;color:var(--t2)}
+.dok{background:rgba(34,197,94,.1);border:1px solid var(--grn);border-radius:10px;padding:18px;text-align:center}
+.detex{background:var(--sur);border:1px solid var(--brd);border-radius:8px;padding:11px;margin-bottom:7px;cursor:pointer;font-size:.81rem;color:var(--t2);transition:border-color .13s}
+.detex:hover{border-color:var(--acc)}
+/* chatbot */
+.chead{padding:11px 16px;border-bottom:1px solid var(--brd);background:var(--sur);display:flex;align-items:center;gap:9px;flex-shrink:0}
+#cmsgs{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.cwelc{text-align:center;padding:14px 10px}
+.cwelc h3{font-family:var(--fh);font-size:1.05rem;font-weight:900;margin-bottom:4px}
+.cwelc p{color:var(--t2);font-size:.82rem}
+.ccat{font-size:.62rem;text-transform:uppercase;letter-spacing:.6px;color:var(--t3);font-weight:700;margin-bottom:3px;margin-top:7px}
+.cqa{background:var(--sur2);border:1px solid var(--brd);border-radius:7px;overflow:hidden;margin-bottom:3px}
+.cq{padding:8px 12px;cursor:pointer;font-size:.81rem;font-weight:600;color:var(--t2);display:flex;justify-content:space-between;align-items:center;gap:9px;transition:background .12s}
+.cq:hover{background:#111827;color:#F1F5F9}.cq.op{color:var(--acc)}
+.carr{font-size:.62rem;flex-shrink:0;transition:transform .16s}.cq.op .carr{transform:rotate(90deg)}
+.ca{display:none;padding:8px 12px;font-size:.79rem;color:var(--t2);line-height:1.7;border-top:1px solid var(--brd)}
+.ca.sh{display:block}.ca code{background:#111827;padding:1px 5px;border-radius:4px}
+.cinrow{display:flex;gap:7px;padding:9px 12px;border-top:1px solid var(--brd);background:var(--sur);flex-shrink:0}
+#cin{flex:1;padding:8px 12px;background:#111827;border:1.5px solid var(--brd);border-radius:10px;color:#F1F5F9;font-size:.84rem;outline:none}
+#cin:focus{border-color:var(--acc)}
+/* plantillas */
+.tplgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:12px;max-width:860px}
+.tplcard{background:var(--sur);border:1px solid var(--brd);border-radius:12px;padding:16px;transition:border-color .15s,transform .15s}
+.tplcard:hover{border-color:var(--acc);transform:translateY(-2px)}
+.tpli{font-size:2rem;margin-bottom:7px}.tpln{font-family:var(--fh);font-size:.88rem;font-weight:800;margin-bottom:2px}
+.tpld{font-size:.73rem;color:var(--t2);margin-bottom:11px;line-height:1.5}
+/* perfil */
+.playout{display:grid;grid-template-columns:250px 1fr;gap:14px;max-width:800px}
+.pcard{background:var(--sur);border:1px solid var(--brd);border-radius:12px;padding:20px;text-align:center}
+.pavt{width:62px;height:62px;border-radius:50%;background:linear-gradient(135deg,var(--acc),var(--pur));display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.2rem;color:#fff;margin:0 auto 9px}
+.pn{font-family:var(--fh);font-size:1.05rem;font-weight:900;margin-bottom:2px}.pe{font-size:.76rem;color:var(--t3);margin-bottom:13px}
+.psts{display:flex;flex-direction:column;gap:6px;text-align:left}
+.pst{display:flex;justify-content:space-between;align-items:center;padding:7px 9px;background:#111827;border:1px solid var(--brd);border-radius:7px}
+.psl{font-size:.76rem;color:var(--t3)}.psv{font-weight:800;font-size:.88rem}
+.blog-btn{width:100%;padding:9px;background:rgba(239,68,68,.1);border:1px solid var(--red);color:var(--red);border-radius:7px;font-weight:700;cursor:pointer;margin-top:11px}
+.blog-btn:hover{background:rgba(239,68,68,.18)}
+.sdgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sditem{background:#111827;border:1px solid var(--brd);border-radius:8px;padding:10px}
+.sdl{font-size:.65rem;color:var(--t3);text-transform:uppercase;margin-bottom:2px}.sdv{font-family:var(--fh);font-size:1.15rem;font-weight:900}
+#bdggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(95px,1fr));gap:7px;margin-top:8px}
+.bdg{background:#111827;border:1px solid var(--brd);border-radius:8px;padding:9px 5px;text-align:center}
+.bdg.e{border-color:var(--yel);background:rgba(245,158,11,.07)}
+.bdg.l{opacity:.38}
+.bdgi{font-size:1.5rem;margin-bottom:3px}.bdgn{font-size:.66rem;font-weight:700;margin-bottom:1px}.bdgd{font-size:.58rem;color:var(--t3);line-height:1.3}
+/* loading dots */
+.ldots{display:flex;gap:4px;justify-content:center;padding:14px}
+.ldots span{width:6px;height:6px;border-radius:50%;background:var(--t3);animation:bounce 1.2s infinite}
+.ldots span:nth-child(2){animation-delay:.2s}.ldots span:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+/* overlay + bottom nav */
+#sbo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:49}
+#sbo.sh{display:block}
+#bnav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--sur);border-top:1px solid var(--brd);z-index:45}
+#bnav.sh{display:block}
+.bnavi{display:flex;justify-content:space-around;padding:4px 0}
+.bn{display:flex;flex-direction:column;align-items:center;gap:1px;padding:5px 9px;cursor:pointer;font-size:.57rem;font-weight:600;color:var(--t3);border-radius:6px}
+.bn.on{color:var(--acc)}
+/* responsive */
+@media(max-width:860px){.genlayout{grid-template-columns:1fr}}
+@media(max-width:768px){
+  #sidebar{position:fixed;top:0;left:0;bottom:0;transform:translateX(-100%);z-index:50;width:230px}
+  #sidebar.op{transform:translateX(0)}
+  .hmbg{display:flex}
+  #main{padding-bottom:56px}
+  #v-guide.on{height:calc(100vh - 56px - 56px);flex-direction:column}
+  #gnav{width:100%;height:auto;border-right:none;border-bottom:1px solid var(--brd);max-height:180px}
+  #gbody{padding:14px}
+  #v-chatbot.on{height:calc(100vh - 56px - 56px)}
+  .view{padding:13px 11px}
+  #v-exercise.on,#v-result.on{padding:0}
+  .statrow{gap:6px}.sv{font-size:1.25rem}.si{font-size:1.3rem}
+  .qgrid{grid-template-columns:repeat(2,1fr)}
+  .playout{grid-template-columns:1fr}
+  .rbtns{flex-direction:column;align-items:stretch}
+  .rbtns .bpri,.rbtns .bsec{width:100%;justify-content:center}
+  .genrow{grid-template-columns:1fr}
+  #toasts{bottom:62px}
+  .tplgrid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:480px){
+  .statrow{gap:4px}.sc{padding:10px 5px}.sv{font-size:1.1rem}.si{font-size:1.15rem}
+  .tplgrid{grid-template-columns:1fr}
+  .sdgrid{grid-template-columns:1fr 1fr}
+}
+
+/* ── Chat conversacional ────────────────── */
+#cmsgs{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:8px;background:var(--bg2);}
+.cmsg{display:flex;align-items:flex-start;gap:8px;max-width:88%;}
+.cbot{align-self:flex-start;}
+.cuser{align-self:flex-end;flex-direction:row-reverse;}
+.cavi{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--acc),var(--pur));display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;}
+.cbubble{background:var(--sur);border:1px solid var(--brd);border-radius:12px 12px 12px 2px;padding:10px 13px;font-size:.84rem;line-height:1.6;color:var(--t1);max-width:100%;}
+.cububble{background:linear-gradient(135deg,var(--acc),var(--pur));border-radius:12px 12px 2px 12px;padding:9px 12px;font-size:.84rem;color:#fff;}
+.copts{display:flex;flex-wrap:wrap;gap:6px;padding:4px 0 4px 38px;}
+.copt{padding:6px 12px;background:var(--sur2);border:1.5px solid var(--acc);border-radius:20px;color:var(--acc);cursor:pointer;font-size:.8rem;font-weight:600;transition:all .15s;white-space:nowrap;}
+.copt:hover{background:var(--acc);color:#fff;}
+.cinrow{display:flex;gap:7px;padding:9px 12px;border-top:1px solid var(--brd);background:var(--sur);flex-shrink:0;}
+#cin{flex:1;padding:8px 12px;background:var(--bg2);border:1.5px solid var(--brd);border-radius:10px;color:var(--t1);font-size:.84rem;outline:none;}
+#cin:focus{border-color:var(--acc);}
+/* Estado GAS */
+.gas-bar{font-size:.7rem;padding:3px 12px;text-align:center;background:var(--bg2);border-bottom:1px solid var(--brd);}
+</style>
+</head>
+<body>
+
+<div id="toasts"></div>
+
+<!-- AUTH -->
+<div id="pg-auth">
+  <div class="acard">
+    <div class="alogo">📚 APA Master</div>
+    <p class="asub">Aprende Normas APA 7 de forma interactiva</p>
+    <div class="atabs">
+      <button type="button" class="atab on" id="tab-in"  onclick="swTab(0)">Ingresar</button>
+      <button type="button" class="atab"    id="tab-reg" onclick="swTab(1)">Registrarse</button>
+    </div>
+
+    <!-- LOGIN -->
+    <form id="fm-in" onsubmit="doLogin(event)">
+      <div class="fld"><label>Correo</label><input type="email" id="in-email" placeholder="tucorreo@ejemplo.com" autocomplete="email"></div>
+      <div class="fld"><label>Contraseña</label>
+        <div class="pwrap"><input type="password" id="in-pw" placeholder="Tu contraseña" autocomplete="current-password">
+          <button type="button" class="peye" onclick="eyePw('in-pw',this)">👁️</button>
+        </div>
+      </div>
+      <span class="ferr" id="in-err"></span>
+      <button type="submit" class="abtn" id="in-btn">Ingresar</button>
+    </form>
+
+    <!-- REGISTRO -->
+    <form id="fm-reg" style="display:none" onsubmit="doReg(event)">
+      <div class="fld"><label>Nombre completo</label><input type="text" id="rg-nm" placeholder="Tu nombre completo" autocomplete="name"></div>
+      <div class="fld"><label>Correo</label><input type="email" id="rg-em" placeholder="tucorreo@ejemplo.com" autocomplete="email"></div>
+      <div class="fld"><label>Contraseña</label>
+        <div class="pwrap"><input type="password" id="rg-pw" placeholder="Mínimo 6 caracteres">
+          <button type="button" class="peye" onclick="eyePw('rg-pw',this)">👁️</button>
+        </div>
+      </div>
+      <div class="fld"><label>Confirmar contraseña</label>
+        <div class="pwrap"><input type="password" id="rg-pw2" placeholder="Repite tu contraseña">
+          <button type="button" class="peye" onclick="eyePw('rg-pw2',this)">👁️</button>
+        </div>
+      </div>
+      <span class="ferr" id="rg-err"></span>
+      <button type="submit" class="abtn" id="rg-btn">Crear cuenta gratis</button>
+    </form>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="pg-app">
+  <div class="app-wrap">
+    <nav id="sidebar">
+      <div class="sbrand">📚 APA Master</div>
+      <div class="ssec">Aprendizaje</div>
+      <div class="sitem" data-v="v-dash"    onclick="go('v-dash')">🏠 Inicio</div>
+      <div class="sitem" data-v="v-lessons" onclick="go('v-lessons')">🗺️ Lecciones</div>
+      <div class="sitem" data-v="v-free"    onclick="go('v-free')">⚡ Modo Libre</div>
+      <div class="ssec">Herramientas</div>
+      <div class="sitem" data-v="v-guide"   onclick="go('v-guide')">📖 Guía APA 7</div>
+      <div class="sitem" data-v="v-gen"     onclick="go('v-gen')">🔗 Generador</div>
+      <div class="sitem" data-v="v-det"     onclick="go('v-det')">🔍 Detector APA</div>
+      <div class="sitem" data-v="v-chatbot" onclick="go('v-chatbot')">🤖 APA Mentor</div>
+      <div class="sitem" data-v="v-tpl"     onclick="go('v-tpl')">📝 Plantillas</div>
+      <div class="sfooter"><div class="gas-bar" id="gas-status" style="border-radius:6px;margin-bottom:6px"></div>
+        <div class="suser" onclick="go('v-prof')">
+          <div class="savatar" id="savtr">?</div>
+          <div><div class="sname" id="snm">Usuario</div><div class="sxp" id="sxp">0 XP</div></div>
+        </div>
+      </div>
+    </nav>
+
+    <div id="abody">
+      <header id="topbar">
+        <button class="hmbg" type="button" onclick="tgSb()">☰</button>
+        <span id="tbgreet">¡Hola! 👋</span>
+        <div class="tbstats">
+          <span class="tbchip" id="tbxp">0 XP</span>
+          <span class="tbchip" id="tbstr">🔥 0</span>
+        </div>
+      </header>
+
+      <main id="main">
+
+        <!-- DASHBOARD -->
+        <div class="view on" id="v-dash">
+          <h1 class="vt">Panel de Aprendizaje</h1>
+          <p class="vs">Tu progreso en APA 7</p>
+          <div class="statrow">
+            <div class="sc"><div class="si">⭐</div><div class="sv yel" id="dxp">0</div><div class="sl">XP Total</div></div>
+            <div class="sc"><div class="si">🔥</div><div class="sv red" id="dstr">0</div><div class="sl">Racha</div></div>
+            <div class="sc"><div class="si">✅</div><div class="sv grn" id="ddone">0</div><div class="sl">Aprendidas</div></div>
+          </div>
+          <div class="stitle">Progreso General</div>
+          <div class="card" style="margin-bottom:16px">
+            <div class="pbg"><div class="pfil" id="dprog" style="width:0%"></div></div>
+            <p class="ptxt" id="dprogtxt">0 / 15 completadas</p>
+          </div>
+          <div class="stitle">Siguiente Lección</div>
+          <div class="ncard" id="dnext"><span style="font-size:1.8rem">📖</span><div><div style="font-size:.67rem;opacity:.8;text-transform:uppercase">Continuar</div><div class="ntit" id="dnexttit">Cargando...</div></div><span style="margin-left:auto">→</span></div>
+          <div class="qgrid" style="margin-top:16px">
+            <button class="qb" onclick="go('v-guide')"><span>📖</span>Guía</button>
+            <button class="qb" onclick="go('v-det')"><span>🔍</span>Detector</button>
+            <button class="qb" onclick="go('v-chatbot')"><span>🤖</span>Mentor</button>
+            <button class="qb" onclick="go('v-tpl')"><span>📝</span>Plantillas</button>
+          </div>
+        </div>
+
+        <!-- LECCIONES -->
+        <div class="view" id="v-lessons">
+          <h1 class="vt">Lecciones</h1>
+          <p class="vs">3 niveles · 15 lecciones · 75 preguntas</p>
+          <div id="lmap"></div>
+        </div>
+
+        <!-- INTRO -->
+        <div class="view" id="v-intro">
+          <button class="bsec" style="margin-bottom:10px" onclick="go('v-lessons')">← Volver</button>
+          <div class="ihero">
+            <span id="ie" style="font-size:2.8rem;display:block;margin-bottom:7px">📖</span>
+            <h2 id="itit" style="font-family:var(--fh);font-size:1.35rem;font-weight:900;margin-bottom:10px">Título</h2>
+            <div class="itags">
+              <span class="itag" id="ixp" style="color:var(--yel);border-color:var(--yel);background:rgba(245,158,11,.1)">+20 XP</span>
+              <span class="itag" id="iq">5 preguntas</span>
+              <span class="itag">❤️❤️❤️ 3 vidas</span>
+            </div>
+            <p id="ixpn" style="display:none;font-size:.73rem;color:var(--t3);margin-bottom:7px"></p>
+            <button class="bpri" onclick="startLesson()">🚀 ¡Comenzar!</button>
+          </div>
+          <div id="itheory"></div>
+          <div style="text-align:center;margin-top:12px"><button class="bpri" onclick="startLesson()">🚀 ¡Comenzar lección!</button></div>
+        </div>
+
+        <!-- EJERCICIO -->
+        <div class="view" id="v-exercise" style="padding:0">
+          <div class="extop">
+            <button class="exclose" onclick="go('v-lessons')">✕</button>
+            <div class="expwrap">
+              <div class="expbg"><div id="exbar" style="width:0%"></div></div>
+              <div class="explbl"><span id="exn">1/5</span><span id="exlbl">Pregunta 1 de 5</span></div>
+            </div>
+            <span id="exhrt">❤️❤️❤️</span>
+          </div>
+          <div class="excard"><p id="exq">Pregunta...</p><div id="exopts"></div></div>
+          <div id="exfb" style="display:none"></div>
+          <button id="exnxt" style="display:none" onclick="nxtQ()">Continuar →</button>
+        </div>
+
+        <!-- RESULTADO -->
+        <div class="view" id="v-result" style="padding:18px">
+          <div class="rwrap">
+            <div id="rico" style="font-size:3.8rem;margin-bottom:7px">🏆</div>
+            <div class="rstars" id="rstars">⭐⭐⭐</div>
+            <h2 class="rtit" id="rtit">¡Excelente!</h2>
+            <p id="rsub" style="color:var(--t2);margin:5px 0 14px;font-size:.85rem"></p>
+            <div class="rsts">
+              <div class="rs"><div class="rsv grn" id="rpct">100%</div><div class="rsl">Precisión</div></div>
+              <div class="rs"><div class="rsv yel" id="rxp">+20 XP</div><div class="rsl">XP</div></div>
+              <div class="rs"><div class="rsv acc" id="rcorr">5/5</div><div class="rsl">Correctas</div></div>
+            </div>
+            <div class="rbtns">
+              <button class="bpri" id="rnxt">Siguiente →</button>
+              <button class="bsec" onclick="go('v-lessons')">🗺️ Lecciones</button>
+              <button class="bsec" onclick="go('v-dash')">🏠 Inicio</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODO LIBRE -->
+        <div class="view" id="v-free">
+          <h1 class="vt">⚡ Modo Libre</h1>
+          <p class="vs">Quiz uno por uno — resultado al final</p>
+          <div class="ffilt">
+            <select id="fniv" onchange="ffilter()">
+              <option value="all">Todos los niveles</option>
+              <option value="1">🌱 Básico</option>
+              <option value="2">📘 Intermedio</option>
+              <option value="3">🏆 Avanzado</option>
+            </select>
+            <input type="text" id="fsrch" placeholder="🔍 Buscar..." oninput="ffilter()">
+            <span class="fcnt" id="fcnt">75 preguntas</span>
+          </div>
+          <div id="fcont"></div>
+        </div>
+
+        <!-- GUIA -->
+        <div class="view" id="v-guide" style="padding:0">
+          <div id="gnav"></div>
+          <div id="gbody"><div class="ldots"><span></span><span></span><span></span></div></div>
+        </div>
+
+        <!-- GENERADOR -->
+        <div class="view" id="v-gen">
+          <h1 class="vt">🔗 Generador de Referencias</h1>
+          <p class="vs">Genera referencias APA 7 manualmente.</p>
+          <div class="genlayout">
+            <div class="card">
+              <div class="gfld"><label>Tipo de fuente</label>
+                <select id="gtipo" onchange="gtog();gprev()">
+                  <option value="web">🌐 Sitio Web</option>
+                  <option value="art">📰 Artículo de Revista</option>
+                  <option value="libro">📚 Libro</option>
+                  <option value="yt">▶️ Video YouTube</option>
+                  <option value="otro">📄 Otro</option>
+                </select>
+              </div>
+              <div class="gfld"><label>Autor</label><input type="text" id="gaut" placeholder="García, J. A." oninput="gprev()"></div>
+              <div class="gfld"><label>Título</label><input type="text" id="gtit" placeholder="Título del documento" oninput="gprev()"></div>
+              <div class="genrow">
+                <div class="gfld"><label>Año</label><input type="text" id="ganio" placeholder="2024" oninput="gprev()"></div>
+                <div class="gfld"><label>Sitio / Editorial</label><input type="text" id="gsit" placeholder="Nombre" oninput="gprev()"></div>
+              </div>
+              <div class="gfld"><label>URL</label><input type="text" id="gurl" placeholder="https://..." oninput="gprev()"></div>
+              <div id="gart" style="display:none">
+                <div class="genrow">
+                  <div class="gfld"><label>Volumen</label><input type="text" id="gvol" placeholder="15" oninput="gprev()"></div>
+                  <div class="gfld"><label>Número</label><input type="text" id="gnum" placeholder="2" oninput="gprev()"></div>
+                  <div class="gfld"><label>Páginas</label><input type="text" id="gpags" placeholder="34–48" oninput="gprev()"></div>
+                </div>
+                <div class="gfld"><label>DOI</label><input type="text" id="gdoi" placeholder="10.1234/ejemplo" oninput="gprev()"></div>
+              </div>
+            </div>
+            <div class="card">
+              <h3 style="font-family:var(--fh);font-weight:800;margin-bottom:10px">👁️ Vista Previa APA 7</h3>
+              <div id="gprev"><em>Completa los campos...</em></div>
+              <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+                <button class="bpri" onclick="gcopy()">📋 Copiar</button>
+                <button class="bsec" onclick="gclear()">🗑️ Limpiar</button>
+              </div>
+              <p style="font-size:.72rem;color:var(--t3)">💡 Con DOI, no incluyas la URL. Formato: <code style="background:#111827;padding:1px 5px;border-radius:4px">https://doi.org/10.XXXX</code></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- DETECTOR -->
+        <div class="view" id="v-det">
+          <h1 class="vt">🔍 Detector de Errores APA</h1>
+          <p class="vs">Pega tu referencia y detectamos errores según APA 7.</p>
+          <div class="card" style="max-width:700px;margin-bottom:14px">
+            <h3 style="font-family:var(--fh);font-weight:800;margin-bottom:4px">📋 Pega aquí tu referencia</h3>
+            <textarea id="detinput" placeholder="Ej: García, Juan. (2020). Fundamentos. México: UNAM. Recuperado de https://ejemplo.com."></textarea>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="bpri" onclick="detect()">🔍 Analizar</button>
+              <button class="bsec" onclick="detclr()">🗑️ Limpiar</button>
+            </div>
+          </div>
+          <div id="detres" style="max-width:700px">
+            <p style="color:var(--t3);font-size:.84rem">Pega una referencia y presiona Analizar.</p>
+          </div>
+          <div style="max-width:700px;margin-top:18px">
+            <h3 style="font-family:var(--fh);font-size:.95rem;font-weight:800;margin-bottom:8px">Ejemplos para probar:</h3>
+            <div class="detex" onclick="setDex('García, Juan Antonio. (2020). Fundamentos de educación. México: UNAM. Recuperado de https://ejemplo.com.')">
+              <span style="font-size:.68rem;color:var(--red);font-weight:700;display:block;margin-bottom:2px">❌ Con errores APA 6</span>
+              García, Juan Antonio. (2020). Fundamentos. México: UNAM. Recuperado de https://ejemplo.com.
+            </div>
+            <div class="detex" onclick="setDex('López, M. J. (2021). Estrategias de aprendizaje. Revista Educación, 15(2), 34-48. https://doi.org/10.1234/re.2021')">
+              <span style="font-size:.68rem;color:var(--grn);font-weight:700;display:block;margin-bottom:2px">✅ Correcta APA 7</span>
+              López, M. J. (2021). Estrategias. Revista Educación, 15(2), 34-48. https://doi.org/10.1234/re.2021
+            </div>
+          </div>
+        </div>
+
+        <!-- CHATBOT -->
+        <div class="view" id="v-chatbot" style="padding:0">
+          <div class="chead">
+            <span style="font-size:1.7rem">🤖</span>
+            <div><h3 style="font-family:var(--fh);font-size:.95rem;font-weight:800">APA Mentor</h3><p style="font-size:.72rem;color:var(--t3)">Preguntas frecuentes APA 7</p></div>
+            <button class="bsec" style="margin-left:auto;padding:5px 9px;font-size:.77rem" onclick="chatclr()">🗑️</button>
+          </div>
+          <div id="cmsgs"></div>
+          <div class="cinrow">
+            <input type="text" id="cin" placeholder="Escribe tu duda o usa los botones..." onkeydown="if(event.key==='Enter')chatSearch()">
+            <button class="bpri" style="padding:9px 14px" onclick="chatSearch()">&#128269;</button>
+          </div>
+        </div>
+
+        <!-- PLANTILLAS -->
+        <div class="view" id="v-tpl">
+          <h1 class="vt">📝 Plantillas Word APA 7</h1>
+          <p class="vs">Documentos con formato APA 7. Descarga y edita.</p>
+          <div class="tplgrid">
+            <div class="tplcard"><div class="tpli">🏫</div><div class="tpln">Portada Universitaria</div><p class="tpld">Portada con institución, título, autor y fecha según APA 7.</p><a href="templates/portada-apa7.docx" download class="bpri" style="display:flex">⬇️ Descargar</a></div>
+            <div class="tplcard"><div class="tpli">📄</div><div class="tpln">Ensayo Completo</div><p class="tpld">Ensayo con portada, desarrollo, conclusión y referencias.</p><a href="templates/ensayo-apa7.docx" download class="bpri" style="display:flex">⬇️ Descargar</a></div>
+            <div class="tplcard"><div class="tpli">📋</div><div class="tpln">Lista de Referencias</div><p class="tpld">Ejemplos de libros, artículos y páginas web en APA 7.</p><a href="templates/referencias-apa7.docx" download class="bpri" style="display:flex">⬇️ Descargar</a></div>
+            <div class="tplcard"><div class="tpli">🔬</div><div class="tpln">Artículo Científico</div><p class="tpld">Estructura IMRAD completa con formato APA 7.</p><a href="templates/articulo-cientifico-apa7.docx" download class="bpri" style="display:flex">⬇️ Descargar</a></div>
+            <div class="tplcard"><div class="tpli">📊</div><div class="tpln">Informe con Tablas</div><p class="tpld">Tablas y figuras formateadas según APA 7.</p><a href="templates/informe-tablas-apa7.docx" download class="bpri" style="display:flex">⬇️ Descargar</a></div>
+            <div class="tplcard"><div class="tpli">✍️</div><div class="tpln">Guía de Citas</div><p class="tpld">Referencia rápida de todos los tipos de citas APA 7.</p><a href="templates/guia-citas-apa7.docx" download class="bpri" style="display:flex">⬇️ Descargar</a></div>
+          </div>
+        </div>
+
+        <!-- PERFIL -->
+        <div class="view" id="v-prof">
+          <h1 class="vt">Mi Perfil</h1>
+          <p class="vs">Tu progreso, insignias y configuración</p>
+        <div class="gas-bar"><span id="gas-status">Verificando conexión...</span></div>
+          <div class="playout">
+            <div class="pcard">
+              <div class="pavt" id="pavt">?</div>
+              <div class="pn" id="pname">Nombre</div>
+              <div class="pe" id="pemail">correo@...</div>
+              <div class="psts">
+                <div class="pst"><span class="psl">⭐ XP</span><span class="psv yel" id="pxp">0</span></div>
+                <div class="pst"><span class="psl">🔥 Racha</span><span class="psv red" id="pstr">0</span></div>
+                <div class="pst"><span class="psl">📚 Aprendidas</span><span class="psv grn" id="pdone">0/15</span></div>
+              </div>
+              <button class="blog-btn" onclick="logout()">🚪 Cerrar sesión</button>
+            </div>
+            <div>
+              <div class="card" style="margin-bottom:12px">
+                <h3 style="font-family:var(--fh);font-weight:800;margin-bottom:10px">✏️ Editar nombre</h3>
+                <div class="fld"><label>Nuevo nombre</label><input type="text" id="pnin" placeholder="Tu nombre completo"></div>
+                <button class="bpri" onclick="savNm()">Guardar</button>
+              </div>
+              <div class="card" style="margin-bottom:12px">
+                <h3 style="font-family:var(--fh);font-weight:800;margin-bottom:10px">📊 Estadísticas</h3>
+                <div class="sdgrid">
+                  <div class="sditem"><div class="sdl">Preguntas</div><div class="sdv" id="ptq">0</div></div>
+                  <div class="sditem"><div class="sdl">Correctas</div><div class="sdv grn" id="pcq">0</div></div>
+                  <div class="sditem"><div class="sdl">Precisión</div><div class="sdv acc" id="pprec">0%</div></div>
+                  <div class="sditem"><div class="sdl">XP</div><div class="sdv yel" id="pxp2">0</div></div>
+                </div>
+              </div>
+              <div class="card">
+                <h3 style="font-family:var(--fh);font-weight:800;margin-bottom:2px">🏅 Mis Insignias</h3>
+                <div id="bdggrid"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+</div>
+
+<!-- SIDEBAR OVERLAY -->
+<div id="sbo" onclick="clSb()"></div>
+
+<!-- BOTTOM NAV -->
+<div id="bnav">
+  <div class="bnavi">
+    <div class="bn" data-v="v-dash"    onclick="go('v-dash')">🏠<span>Inicio</span></div>
+    <div class="bn" data-v="v-lessons" onclick="go('v-lessons')">🗺️<span>Lecciones</span></div>
+    <div class="bn" data-v="v-guide"   onclick="go('v-guide')">📖<span>Guía</span></div>
+    <div class="bn" data-v="v-det"     onclick="go('v-det')">🔍<span>Detector</span></div>
+    <div class="bn" data-v="v-chatbot" onclick="go('v-chatbot')">🤖<span>Mentor</span></div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/data.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════
+// ESTADO GLOBAL
+// ═══════════════════════════════════════════════════════
+var U=null, P=[], ANS=[], EX=null;
+var GAS_OK = false; // se actualiza al conectar
+
+// ═══════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════
+function _(id){return document.getElementById(id);}
+function h(s){
+  if(typeof s!=='string')return'';
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function toast(msg,t,d){
+  var c=_('toasts'),el=document.createElement('div');
+  el.className='toast '+(t||'i');el.textContent=msg;
+  c.appendChild(el);
+  setTimeout(function(){el.classList.add('show');},10);
+  setTimeout(function(){el.classList.remove('show');setTimeout(function(){el.remove();},350);},d||3000);
+}
+
+// ═══════════════════════════════════════════════════════
+// STORAGE LOCAL (caché + fallback sin GAS)
+// ═══════════════════════════════════════════════════════
+function lsGet(k){try{return JSON.parse(localStorage.getItem(k)||'null');}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function lsDel(k){localStorage.removeItem(k);}
+
+function getLocalUsers(){return lsGet('apa_users')||[];}
+function saveLocalUsers(a){lsSet('apa_users',a);}
+function getLP(uid){return lsGet('apa_p_'+uid)||[];}
+function saveLP(uid,a){lsSet('apa_p_'+uid,a);}
+function getLA(uid){return lsGet('apa_a_'+uid)||[];}
+function saveLA(uid,a){lsSet('apa_a_'+uid,a);}
+function getBdg(){
+  if(!U)return new Set();
+  return new Set(lsGet('apa_b_'+U.id)||[]);
+}
+function savBdg(bid){
+  if(!U)return;
+  var s=getBdg(); s.add(String(bid));
+  lsSet('apa_b_'+U.id,[...s]);
+}
+
+// ═══════════════════════════════════════════════════════
+// AUTH — GAS primero, localStorage como fallback
+// ═══════════════════════════════════════════════════════
+function swTab(i){
+  _('fm-in').style.display  = i===0?'':'none';
+  _('fm-reg').style.display = i===1?'':'none';
+  _('tab-in').classList.toggle('on',i===0);
+  _('tab-reg').classList.toggle('on',i===1);
+  _('in-err').textContent='';_('rg-err').textContent='';
+}
+
+function eyePw(id,btn){
+  var inp=_(id);
+  inp.type=inp.type==='password'?'text':'password';
+  btn.textContent=inp.type==='password'?'👁️':'🙈';
+}
+
+async function doLogin(e){
+  e.preventDefault();
+  var em=_('in-email').value.trim().toLowerCase();
+  var pw=_('in-pw').value;
+  var err=_('in-err');
+  err.textContent='';
+  if(!em||!pw){err.textContent='Ingresa tu correo y contraseña.';return;}
+  var btn=_('in-btn'); btn.disabled=true; btn.textContent='Ingresando...';
+
+  var user=null;
+  // Intentar con GAS
+  if(API.isConfigured()){
+    var res=await API.login(em,pw);
+    if(res.success){
+      user=res.data;
+      GAS_OK=true;
+    } else if(res.error!=='GAS_NO_CONFIGURADO'){
+      btn.disabled=false; btn.textContent='Ingresar';
+      err.textContent=res.error||'Credenciales incorrectas.';
+      return;
+    }
+  }
+  // Fallback local
+  if(!user){
+    var users=getLocalUsers();
+    var u=users.find(function(x){return x.email===em;});
+    if(!u||u.pw!==btoa(pw)){
+      btn.disabled=false; btn.textContent='Ingresar';
+      err.textContent='Correo o contraseña incorrectos.';
+      return;
+    }
+    user={id:u.id,nombre:u.nombre,correo:u.email,xp_total:u.xp||0,racha_actual:u.streak||0};
+  }
+  btn.disabled=false; btn.textContent='Ingresar';
+  await startSession(user);
+}
+
+async function doReg(e){
+  e.preventDefault();
+  var nm=_('rg-nm').value.trim();
+  var em=_('rg-em').value.trim().toLowerCase();
+  var pw=_('rg-pw').value;
+  var pw2=_('rg-pw2').value;
+  var err=_('rg-err');
+  err.textContent='';
+  if(!nm||!em||!pw){err.textContent='Todos los campos son obligatorios.';return;}
+  if(pw.length<6){err.textContent='La contraseña debe tener al menos 6 caracteres.';return;}
+  if(pw!==pw2){err.textContent='Las contraseñas no coinciden.';return;}
+
+  var btn=_('rg-btn'); btn.disabled=true; btn.textContent='Creando cuenta...';
+
+  var user=null;
+  if(API.isConfigured()){
+    var res=await API.register(nm,em,pw);
+    if(res.success){
+      user=res.data; GAS_OK=true;
+    } else if(res.error!=='GAS_NO_CONFIGURADO'){
+      btn.disabled=false; btn.textContent='Crear cuenta gratis';
+      err.textContent=res.error||'Error al crear la cuenta.';
+      return;
+    }
+  }
+  if(!user){
+    // Local fallback
+    var users=getLocalUsers();
+    if(users.find(function(x){return x.email===em;})){
+      btn.disabled=false; btn.textContent='Crear cuenta gratis';
+      err.textContent='Ese correo ya está registrado.'; return;
+    }
+    var lu={id:'u'+Date.now(),nombre:nm,email:em,pw:btoa(pw),xp:0,streak:0,lastDay:null};
+    users.push(lu); saveLocalUsers(users);
+    user={id:lu.id,nombre:nm,correo:em,xp_total:0,racha_actual:0};
+  }
+  btn.disabled=false; btn.textContent='Crear cuenta gratis';
+  await startSession(user);
+}
+
+async function startSession(user){
+  U=user;
+  lsSet('apa_sid', user.id);
+
+  // Cargar progreso
+  if(GAS_OK){
+    var pr=await API.getProgress(user.id); if(pr.success) P=pr.data;
+    var sr=await API.checkStreak(user.id);
+    if(sr.success){U.racha_actual=sr.data.racha; lsSet('apa_user',U);}
+  } else {
+    P=getLP(user.id);
+    ANS=getLA(user.id);
+    // racha local
+    var today=new Date().toISOString().split('T')[0];
+    var ld=lsGet('apa_ld_'+user.id);
+    if(ld!==today){
+      var diff=ld?Math.round((new Date(today)-new Date(ld))/86400000):0;
+      U.racha_actual=diff===1?(U.racha_actual||0)+1:1;
+      lsSet('apa_ld_'+user.id,today);
+    }
+    lsSet('apa_user',U);
+  }
+  ANS=getLA(user.id);
+
+  _('pg-auth').style.display='none';
+  _('pg-app').style.display='block';
+  _('bnav').classList.add('sh');
+  showGasStatus();
+  go('v-dash');
+  toast('¡Bienvenido/a, '+user.nombre.split(' ')[0]+'! 👋','s');
+}
+
+function showGasStatus(){
+  var el=_('gas-status');
+  if(!el)return;
+  if(API.isConfigured()&&GAS_OK){
+    el.textContent='☁️ Base de datos conectada';
+    el.style.color='var(--grn)';
+  } else if(API.isConfigured()){
+    el.textContent='⚠️ Sin conexión — modo local';
+    el.style.color='var(--yel)';
+  } else {
+    el.textContent='💾 Modo local (configura GAS)';
+    el.style.color='var(--t3)';
+  }
+}
+
+function logout(){
+  lsDel('apa_sid');
+  U=null; P=[]; ANS=[]; GAS_OK=false;
+  _('pg-app').style.display='none';
+  _('bnav').classList.remove('sh');
+  _('pg-auth').style.display='flex';
+  swTab(0);
+  toast('Sesión cerrada','i');
+}
+
+// ═══════════════════════════════════════════════════════
+// ROUTER
+// ═══════════════════════════════════════════════════════
+var CUR='v-dash';
+function go(vid,data){
+  data=data||{};
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('on');});
+  var el=_(vid); if(!el)return;
+  el.classList.add('on'); el.scrollTop=0; CUR=vid;
+  document.querySelectorAll('.sitem').forEach(function(n){n.classList.toggle('on',n.dataset.v===vid);});
+  document.querySelectorAll('.bn').forEach(function(b){b.classList.toggle('on',b.dataset.v===vid);});
+  updSb(); clSb();
+  if(vid==='v-dash')rdash();
+  else if(vid==='v-lessons')rless();
+  else if(vid==='v-intro')rintro(data);
+  else if(vid==='v-exercise')rexer();
+  else if(vid==='v-result')rresult(data);
+  else if(vid==='v-free'){buildPool();fstart();}
+  else if(vid==='v-guide')rguide(data);
+  else if(vid==='v-gen')initGen();
+  else if(vid==='v-chatbot')rchat();
+  else if(vid==='v-prof')rprof();
+}
+
+// ═══════════════════════════════════════════════════════
+// SIDEBAR
+// ═══════════════════════════════════════════════════════
+function tgSb(){_('sidebar').classList.toggle('op');_('sbo').classList.toggle('sh');}
+function clSb(){_('sidebar').classList.remove('op');_('sbo').classList.remove('sh');}
+function updSb(){
+  if(!U)return;
+  var av=_('savtr'),sn=_('snm'),sx=_('sxp');
+  if(av)av.textContent=U.nombre.substring(0,2).toUpperCase();
+  if(sn)sn.textContent=U.nombre.split(' ')[0];
+  if(sx)sx.textContent=(U.xp_total||0)+' XP';
+}
+
+// ═══════════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════════
+function rdash(){
+  if(!U)return;
+  _('tbgreet').textContent='¡Hola, '+U.nombre.split(' ')[0]+'! 👋';
+  _('tbxp').textContent=(U.xp_total||0)+' XP';
+  _('tbstr').textContent='🔥 '+(U.racha_actual||0);
+  _('dxp').textContent=U.xp_total||0;
+  _('dstr').textContent=U.racha_actual||0;
+  var total=APA_DATA.niveles.reduce(function(s,n){return s+n.lecciones.length;},0);
+  var comp=P.filter(function(p){return p.completada===true||p.completada==='TRUE'||p.completada==='true'||p.c===true;}).length;
+  var perf=P.filter(function(p){
+    var c=p.completada===true||p.completada==='TRUE'||p.completada==='true'||p.c===true;
+    var pct=parseInt(p.porcentaje||p.p||0);
+    return c&&pct===100;
+  }).length;
+  var pct=total?Math.round(comp/total*100):0;
+  _('ddone').textContent=perf;
+  _('dprog').style.width=pct+'%';
+  _('dprogtxt').textContent=comp+' / '+total+' completadas';
+  var nxt=nextLesson(),nb=_('dnext');
+  if(nxt&&nb){nb.style.display='';_('dnexttit').textContent=nxt.titulo;nb.onclick=function(){go('v-intro',{lec:nxt});};}
+  else if(nb){nb.style.display='none';}
+}
+
+function isDone(lid){
+  return P.some(function(p){
+    var cid=p.id_leccion||p.l;
+    var done=p.completada===true||p.completada==='TRUE'||p.completada==='true'||p.c===true;
+    return String(cid)===String(lid)&&done;
+  });
+}
+function isPerf(lid){
+  return P.some(function(p){
+    var cid=p.id_leccion||p.l;
+    var done=p.completada===true||p.completada==='TRUE'||p.completada==='true'||p.c===true;
+    var pct=parseInt(p.porcentaje||p.p||0);
+    return String(cid)===String(lid)&&done&&pct===100;
+  });
+}
+function lvUnlocked(nv){return nv.xpRequerido===0||(U&&(U.xp_total||0)>=nv.xpRequerido);}
+function nextLesson(){
+  for(var i=0;i<APA_DATA.niveles.length;i++){
+    var nv=APA_DATA.niveles[i];
+    if(!lvUnlocked(nv))continue;
+    for(var j=0;j<nv.lecciones.length;j++){
+      if(!isDone(nv.lecciones[j].id))return nv.lecciones[j];
+    }
+  }
+  return null;
+}
+function addXP(n){
+  if(!U||n<=0)return;
+  U.xp_total=(parseInt(U.xp_total)||0)+n;
+  lsSet('apa_user',U);
+  if(GAS_OK) API.updateXP(U.id,n).catch(function(){});
+}
+function chkBdg(){
+  if(!U)return;
+  var earned=getBdg();
+  var xp=parseInt(U.xp_total)||0, streak=parseInt(U.racha_actual)||0;
+  var comp=P.filter(function(p){return p.completada===true||p.completada==='TRUE'||p.completada==='true'||p.c===true;}).length;
+  var perf=P.filter(function(p){
+    var done=p.completada===true||p.completada==='TRUE'||p.completada==='true'||p.c===true;
+    return done&&parseInt(p.porcentaje||p.p||0)===100;
+  }).length;
+  var corr=ANS.filter(function(a){return a.ok===true||a.es_correcta===true||a.es_correcta==='TRUE';}).length;
+  APA_DATA.insignias.forEach(function(b){
+    if(earned.has(String(b.id)))return;
+    var ok=false;
+    if(b.condicion_tipo==='lecciones')ok=comp>=b.condicion_valor;
+    else if(b.condicion_tipo==='perfectas')ok=perf>=b.condicion_valor;
+    else if(b.condicion_tipo==='racha')ok=streak>=b.condicion_valor;
+    else if(b.condicion_tipo==='xp')ok=xp>=b.condicion_valor;
+    else if(b.condicion_tipo==='precision')ok=corr>=b.condicion_valor;
+    if(ok){
+      savBdg(b.id);
+      if(GAS_OK)API.earnBadge(U.id,b.id).catch(function(){});
+      setTimeout(function(){toast('🏅 Insignia desbloqueada: '+b.nombre+' '+b.icono,'s',5000);},700);
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// MAPA DE LECCIONES
+// ═══════════════════════════════════════════════════════
+var LFLAT=[];
+function rless(){
+  LFLAT=[];
+  var c=_('lmap'); if(!c)return; c.innerHTML='';
+  APA_DATA.niveles.forEach(function(nv,ni){
+    var ul=lvUnlocked(nv);
+    var done=nv.lecciones.filter(function(l){return isDone(l.id);}).length;
+    var pct=Math.round(done/nv.lecciones.length*100);
+    var bl=document.createElement('div'); bl.className='lvbl';
+    bl.innerHTML='<div class="lvhd">'+
+      '<span class="lve">'+nv.emoji+'</span>'+
+      '<div class="lvn"><h3>'+h(nv.nombre)+'</h3><p>'+h(nv.subtitulo)+'</p>'+
+      (ul?'<div class="lpb"><div class="lpf" style="width:'+pct+'%;background:'+nv.color+'"></div></div>'+
+          '<span class="lpt">'+done+'/'+nv.lecciones.length+' completadas</span>':
+          '<span class="ltag">&#128274; Necesitas '+nv.xpRequerido+' XP (tienes '+(U?U.xp_total:0)+')</span>')+
+      '</div></div>'+
+      '<div class="llist '+(ul?'':'dim')+'" id="ll'+ni+'"></div>';
+    c.appendChild(bl);
+    var ll=bl.querySelector('#ll'+ni);
+    nv.lecciones.forEach(function(lec){
+      var idx=LFLAT.length; LFLAT.push({lec:lec,ul:ul,xpReq:nv.xpRequerido});
+      var pf=isPerf(lec.id),dn=isDone(lec.id);
+      var cls=pf?'lc perf':dn?'lc done':'lc';
+      var ico=pf?'&#11088;':dn?'&#9989;':lec.emoji;
+      var card=document.createElement('div'); card.className=cls;
+      card.innerHTML='<span class="lico">'+ico+'</span>'+
+        '<div><span class="lct">'+h(lec.titulo)+'</span>'+
+        '<span class="lcx">+'+lec.xp+' XP &middot; '+lec.preguntas.length+' preguntas</span></div>'+
+        (pf?'<span class="lbdg">&#11088;</span>':dn?'<span class="lbdg" style="background:var(--grn)">&#10003;</span>':'');
+      (function(i){card.onclick=function(){openL(i);};})(idx);
+      ll.appendChild(card);
+    });
+    if(ni<APA_DATA.niveles.length-1){
+      var sep=document.createElement('div'); sep.className='sep';
+      sep.innerHTML='<div class="sep-l"></div><span>&#11015;&#65039;</span><div class="sep-l"></div>';
+      c.appendChild(sep);
+    }
+  });
+}
+function openL(idx){
+  var item=LFLAT[idx]; if(!item)return;
+  if(!item.ul){toast('Necesitas '+item.xpReq+' XP para desbloquear','w');return;}
+  go('v-intro',{lec:item.lec});
+}
+
+// ═══════════════════════════════════════════════════════
+// INTRO + EJERCICIO
+// ═══════════════════════════════════════════════════════
+function rintro(data){
+  var lec=data&&data.lec; if(!lec){go('v-lessons');return;}
+  EX={lec:lec};
+  _('ie').textContent=lec.emoji;
+  _('itit').textContent=lec.titulo;
+  _('ixp').textContent='+'+lec.xp+' XP';
+  _('iq').textContent=lec.preguntas.length+' preguntas';
+  _('itheory').innerHTML='<div class="tbox">'+lec.teoria+'</div>';
+  var dn=isDone(lec.id),note=_('ixpn');
+  if(note){note.style.display=dn?'':'none';note.textContent='(ya ganaste el XP de esta lección)';}
+}
+function startLesson(){
+  var lec=EX&&EX.lec; if(!lec)return;
+  var qs=[].concat(lec.preguntas).sort(function(){return Math.random()-.5;});
+  EX={lec:lec,qs:qs,idx:0,lives:3,corr:0,tot:qs.length};
+  go('v-exercise');
+}
+function rexer(){
+  var ex=EX; if(!ex||!ex.qs)return;
+  var q=ex.qs[ex.idx],pct=Math.round(ex.idx/ex.tot*100);
+  _('exbar').style.width=pct+'%';
+  _('exn').textContent=ex.idx+'/'+ex.tot;
+  _('exlbl').textContent='Pregunta '+(ex.idx+1)+' de '+ex.tot;
+  _('exhrt').textContent='❤️'.repeat(ex.lives)+'🖤'.repeat(Math.max(0,3-ex.lives));
+  _('exq').textContent=q.texto;
+  var idxs=[0,1,2,3].sort(function(){return Math.random()-.5;});
+  _('exopts').innerHTML=idxs.map(function(i,pos){
+    return'<button class="opt" data-i="'+i+'" onclick="pick('+i+','+q.correcta+')">'+
+      '<span class="oltr">'+String.fromCharCode(65+pos)+'</span>'+h(q.opciones[i])+'</button>';
+  }).join('');
+  _('exfb').style.display='none'; _('exnxt').style.display='none';
+}
+function pick(sel,corr){
+  var ex=EX,q=ex.qs[ex.idx],ok=sel===corr;
+  document.querySelectorAll('.opt').forEach(function(b){
+    b.disabled=true;
+    var i=parseInt(b.dataset.i);
+    if(i===corr)b.classList.add('ok');
+    if(i===sel&&!ok)b.classList.add('no');
+  });
+  if(ok)ex.corr++; else ex.lives--;
+  ANS.push({ok:ok,es_correcta:ok});
+  saveLA(U.id,ANS);
+  if(GAS_OK)API.saveAnswer(U.id,q.id,ok,'leccion').catch(function(){});
+  var fb=_('exfb');
+  fb.className=ok?'fb-ok':'fb-no'; fb.style.display='flex';
+  fb.innerHTML='<span class="fbi">'+(ok?'✅':'❌')+'</span>'+
+    '<div class="fbt"><strong>'+(ok?'¡Correcto!':'Incorrecto')+'</strong>'+
+    '<p>'+h(q.explicacion)+'</p>'+(!ok?'<p><strong>Respuesta:</strong> '+h(q.opciones[corr])+'</p>':'')+
+    '</div>';
+  var nx=_('exnxt'); nx.style.display='flex';
+  if(ex.lives<=0){nx.textContent='💔 Sin vidas — Ver resultado';nx.onclick=function(){finish(false);};}
+  else if(ex.idx+1>=ex.tot){nx.textContent='🏆 Finalizar';nx.onclick=function(){finish(true);};}
+  else{nx.textContent='Continuar →';nx.onclick=nxtQ;}
+}
+function nxtQ(){EX.idx++;if(EX.idx>=EX.tot)finish(true);else rexer();}
+async function finish(ok){
+  var ex=EX,pct=Math.round(ex.corr/ex.tot*100);
+  var prev=isDone(ex.lec.id),xpG=(ok&&!prev)?ex.lec.xp:0;
+  // Guardar progreso
+  var entry={id_leccion:ex.lec.id,l:ex.lec.id,completada:ok,c:ok,porcentaje:pct,p:pct};
+  var idx=P.findIndex(function(p){return String(p.id_leccion||p.l)===String(ex.lec.id);});
+  if(idx>=0)P[idx]=entry; else P.push(entry);
+  saveLP(U.id,P);
+  if(xpG>0)addXP(xpG);
+  if(GAS_OK){
+    await API.saveProgress(U.id,ex.lec.id,ok,pct,xpG).catch(function(){});
+  }
+  chkBdg();
+  go('v-result',{ok:ok,pct:pct,xpG:xpG,corr:ex.corr,tot:ex.tot,prev:prev,lec:ex.lec});
+}
+function rresult(d){
+  var ico=!d.ok?'💔':d.pct===100?'⭐':'✅';
+  var tit=!d.ok?'Sigue intentando':d.pct===100?'¡Perfecto!':'¡Completada!';
+  var sub=!d.ok?'Perdiste todas las vidas. '+(d.corr||0)+'/'+d.tot+' correctas.':
+               'Respondiste '+(d.corr||0)+' de '+d.tot+' correctamente.';
+  _('rico').textContent=ico; _('rtit').textContent=tit; _('rsub').textContent=sub;
+  _('rpct').textContent=d.pct+'%';
+  _('rxp').textContent=d.xpG>0?'+'+d.xpG+' XP':(d.prev?'Ya ganado':'0 XP');
+  _('rcorr').textContent=(d.corr||0)+'/'+d.tot;
+  var st=d.pct===100?3:d.pct>=60?2:1;
+  _('rstars').textContent='⭐'.repeat(st)+'☆'.repeat(3-st);
+  var nb=_('rnxt'),nxt=nextLesson();
+  if(d.ok&&nxt){nb.textContent='Siguiente →';nb.onclick=function(){go('v-intro',{lec:nxt});};}
+  else if(d.ok){nb.textContent='🏅 ¡Completaste todo!';nb.onclick=function(){go('v-lessons');};}
+  else{nb.textContent='🔄 Intentar de nuevo';nb.onclick=startLesson;}
+}
+
+// ═══════════════════════════════════════════════════════
+// MODO LIBRE
+// ═══════════════════════════════════════════════════════
+var FPOOL=[],FIDX=0,FCORR=0;
+function buildPool(){
+  var niv=(_('fniv')||{}).value||'all';
+  var term=((_('fsrch')||{}).value||'').toLowerCase().trim();
+  FPOOL=[];
+  APA_DATA.niveles.forEach(function(nv){
+    if(niv!=='all'&&String(nv.id)!==niv)return;
+    nv.lecciones.forEach(function(lec){
+      lec.preguntas.forEach(function(q){
+        if(term&&!q.texto.toLowerCase().includes(term)&&!lec.titulo.toLowerCase().includes(term))return;
+        FPOOL.push({q:q,le:lec.emoji,lt:lec.titulo});
+      });
+    });
+  });
+  var el=_('fcnt'); if(el)el.textContent=FPOOL.length+' preguntas';
+}
+function ffilter(){buildPool();fstart();}
+function fstart(){
+  var c=_('fcont'); if(!c)return;
+  c.innerHTML='<div class="fstart">'+
+    '<div class="ficon">⚡</div>'+
+    '<h3 style="font-family:var(--fh);font-size:1.2rem;font-weight:900;margin-bottom:6px">'+FPOOL.length+' preguntas</h3>'+
+    '<p style="color:var(--t2);font-size:.84rem;margin-bottom:16px">Se mezclan y van una por una. Resultado al final.</p>'+
+    (FPOOL.length>0?'<button class="bpri" onclick="fbegin()">🚀 Iniciar Quiz</button>':
+     '<p style="color:var(--red);font-size:.82rem">No hay preguntas con ese filtro.</p>')+
+    '</div>';
+}
+function fbegin(){
+  FPOOL=FPOOL.sort(function(){return Math.random()-.5;});
+  FIDX=0; FCORR=0; frend();
+}
+function frend(){
+  var c=_('fcont'); if(!c)return;
+  if(FIDX>=FPOOL.length){fres();return;}
+  var item=FPOOL[FIDX],q=item.q,pct=Math.round(FIDX/FPOOL.length*100);
+  c.innerHTML='<div class="fqw">'+
+    '<div class="fqpb"><div class="fqpf" style="width:'+pct+'%"></div></div>'+
+    '<div class="fqmeta"><span style="background:var(--sur2);border:1px solid var(--brd);padding:2px 8px;border-radius:20px;font-size:.7rem">'+item.le+' '+h(item.lt)+'</span>'+
+    '<span>'+(FIDX+1)+'/'+FPOOL.length+'</span></div>'+
+    '<div class="fqcard">'+
+      '<p class="fqt">'+h(q.texto)+'</p>'+
+      '<div class="fqopts">'+
+        q.opciones.map(function(op,i){
+          return'<button class="fqo" data-i="'+i+'" onclick="fpick('+i+','+q.correcta+')">'+
+            '<span class="fqol">'+String.fromCharCode(65+i)+'</span>'+h(op)+'</button>';
+        }).join('')+
+      '</div>'+
+      '<div class="fqfb" id="fqfb"></div>'+
+    '</div>'+
+    '<button class="fqnxt" id="fqnxt" style="display:none" onclick="FIDX++;frend()">Continuar →</button>'+
+    '</div>';
+}
+function fpick(sel,corr){
+  var q=FPOOL[FIDX].q,ok=sel===corr;
+  document.querySelectorAll('.fqo').forEach(function(b){
+    b.disabled=true;
+    var i=parseInt(b.dataset.i);
+    if(i===corr)b.classList.add('ok');
+    if(i===sel&&!ok)b.classList.add('no');
+  });
+  if(ok)FCORR++;
+  ANS.push({ok:ok,es_correcta:ok}); saveLA(U.id,ANS);
+  if(GAS_OK)API.saveAnswer(U.id,q.id,ok,'libre').catch(function(){});
+  var fb=_('fqfb');
+  fb.className='fqfb sh '+(ok?'ok':'no');
+  fb.innerHTML='<span>'+(ok?'✅ ¡Correcto!':'❌ Incorrecto')+'</span>'+
+    '<p>'+h(q.explicacion)+'</p>'+(!ok?'<p><strong>Respuesta:</strong> '+h(q.opciones[corr])+'</p>':'');
+  var nx=_('fqnxt'); if(nx)nx.style.display='flex';
+}
+function fres(){
+  var c=_('fcont'),tot=FPOOL.length,pct=Math.round(FCORR/tot*100);
+  var ico=pct===100?'🏆':pct>=70?'🎉':pct>=50?'👍':'📚';
+  var msg=pct===100?'¡Perfecto! Todas correctas 🌟':pct>=70?'¡Muy bien! 🚀':pct>=50?'Sigue practicando 💪':'Repasa las lecciones 📖';
+  c.innerHTML='<div class="frcard">'+
+    '<div style="font-size:3.2rem;margin-bottom:8px">'+ico+'</div>'+
+    '<h2 style="font-family:var(--fh);font-size:1.35rem;font-weight:900;margin-bottom:16px">Resultado del Quiz</h2>'+
+    '<div class="rsts">'+
+      '<div class="rs"><div class="rsv grn">'+FCORR+'</div><div class="rsl">Correctas</div></div>'+
+      '<div class="rs"><div class="rsv red">'+(tot-FCORR)+'</div><div class="rsl">Incorrectas</div></div>'+
+      '<div class="rs"><div class="rsv acc">'+pct+'%</div><div class="rsl">Precisión</div></div>'+
+    '</div>'+
+    '<p style="color:var(--acc);font-size:.88rem;font-weight:600;margin-bottom:14px">'+msg+'</p>'+
+    '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">'+
+      '<button class="bpri" onclick="fbegin()">🔄 Jugar de nuevo</button>'+
+      '<button class="bsec" onclick="fstart()">⚙️ Filtros</button>'+
+    '</div></div>';
+}
+
+// ═══════════════════════════════════════════════════════
+// GUÍA APA
+// ═══════════════════════════════════════════════════════
+var GAct=null;
+function rguide(data){
+  data=data||{};
+  var nav=_('gnav'); if(!nav)return;
+  var cats=[...new Set(APA_DATA.guia.map(function(s){return s.categoria;}))];
+  nav.innerHTML='<input class="gsrch" type="text" placeholder="🔍 Buscar..." oninput="gfilt(this.value)">'+
+    cats.map(function(cat){
+      return'<div class="gcat">'+h(cat)+'</div>'+
+        APA_DATA.guia.filter(function(s){return s.categoria===cat;}).map(function(s){
+          return'<div class="glink '+(GAct===s.id?'on':'')+'" data-sid="'+s.id+'" onclick="gsec(this.dataset.sid)">'+s.icono+' '+h(s.titulo)+'</div>';
+        }).join('');
+    }).join('');
+  gsec(data.id||GAct||APA_DATA.guia[0].id);
+}
+function gsec(id){
+  GAct=id;
+  var sec=APA_DATA.guia.find(function(s){return s.id===id;}); if(!sec)return;
+  document.querySelectorAll('.glink').forEach(function(l){
+    l.classList.toggle('on',l.dataset.sid===id);
+  });
+  var i=APA_DATA.guia.findIndex(function(s){return s.id===id;});
+  var prv=i>0?APA_DATA.guia[i-1]:null,nxt=i<APA_DATA.guia.length-1?APA_DATA.guia[i+1]:null;
+  var body=_('gbody'); if(!body)return;
+  body.innerHTML='<div class="ghd"><span class="ghi">'+sec.icono+'</span>'+
+    '<div><span class="ghcat">'+h(sec.categoria)+'</span><h2>'+h(sec.titulo)+'</h2></div></div>'+
+    '<div class="gbody">'+sec.contenido+'</div>'+
+    '<div class="gnav-btns">'+
+      (prv?'<button class="gnb" data-sid="'+prv.id+'" onclick="gsec(this.dataset.sid)">&#8592; '+h(prv.titulo)+'</button>':'<span></span>')+
+      (nxt?'<button class="gnb nxt" data-sid="'+nxt.id+'" onclick="gsec(this.dataset.sid)">'+h(nxt.titulo)+' &#8594;</button>':'')+
+    '</div>';
+  body.scrollTop=0;
+}
+function gfilt(q){
+  var t=q.toLowerCase().trim();
+  document.querySelectorAll('.glink').forEach(function(l){l.style.display=l.textContent.toLowerCase().includes(t)?'':'none';});
+}
+
+// ═══════════════════════════════════════════════════════
+// GENERADOR
+// ═══════════════════════════════════════════════════════
+function initGen(){genTog();genPrev();}
+function genTog(){
+  var t=(_('gtipo')||{}).value,a=_('gart');
+  if(a)a.style.display=t==='art'?'':'none';
+}
+function genPrev(){
+  var tipo=(_('gtipo')||{}).value||'web';
+  var aut=(_('gaut')||{}).value||'',tit=(_('gtit')||{}).value||'';
+  var anio=(_('ganio')||{}).value||'s.f.',sit=(_('gsit')||{}).value||'';
+  var url=(_('gurl')||{}).value||'';
+  var vol=(_('gvol')||{}).value||'',num=(_('gnum')||{}).value||'';
+  var pags=(_('gpags')||{}).value||'',doi=(_('gdoi')||{}).value||'';
+  function aAPA(n){
+    var p=n.trim().split(/\s+/);
+    if(p.length===1)return p[0]+',';
+    var l=p[p.length-1],ins=p.slice(0,-1).map(function(x){return x[0].toUpperCase()+'.';}).join(' ');
+    return l+', '+ins;
+  }
+  var aP=aut?aAPA(aut):''; var ref='';
+  if(tipo==='web'){if(aP)ref+=aP+' ';ref+='('+anio+'). ';if(tit)ref+='<em>'+h(tit)+'</em>. ';if(sit)ref+=h(sit)+'. ';if(url)ref+=h(url);}
+  else if(tipo==='art'){if(aP)ref+=aP+' ';ref+='('+anio+'). ';if(tit)ref+=h(tit)+'. ';if(sit){ref+='<em>'+h(sit);if(vol)ref+=', '+h(vol);ref+='</em>';}if(num)ref+='('+h(num)+')';if(pags)ref+=', '+h(pags);ref+='. ';if(doi)ref+='https://doi.org/'+h(doi.replace(/^https?:\/\/doi\.org\//,''));else if(url)ref+=h(url);}
+  else if(tipo==='libro'){if(aP)ref+=aP+' ';ref+='('+anio+'). ';if(tit)ref+='<em>'+h(tit)+'</em>. ';if(sit)ref+=h(sit)+'. ';if(doi)ref+='https://doi.org/'+h(doi.replace(/^https?:\/\/doi\.org\//,''));else if(url)ref+=h(url);}
+  else if(tipo==='yt'){if(aut)ref+=h(aut)+'. ';ref+='('+anio+'). ';if(tit)ref+='<em>'+h(tit)+'</em> [Video]. ';ref+='YouTube. ';if(url)ref+=h(url);}
+  else{if(aP)ref+=aP+' ';ref+='('+anio+'). ';if(tit)ref+=h(tit)+'. ';if(url)ref+=h(url);}
+  var el=_('gprev'); if(el)el.innerHTML=ref||'<em>Completa los campos...</em>';
+}
+function genCopy(){
+  var el=_('gprev'); if(!el)return;
+  var t=el.innerText||el.textContent;
+  navigator.clipboard.writeText(t).then(function(){toast('¡Copiado! 📋','s');}).catch(function(){
+    var ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();toast('¡Copiado!','s');
+  });
+}
+async function genGuardar(){
+  var el=_('gprev'); if(!el)return;
+  var ref=el.innerText||el.textContent;
+  if(!ref||ref.trim()==='Completa los campos...'){toast('Completa los campos primero','w');return;}
+  if(GAS_OK){
+    var res=await API.saveRef(U.id,{
+      tipo:(_('gtipo')||{}).value,
+      autor:(_('gaut')||{}).value,
+      titulo:(_('gtit')||{}).value,
+      anio:(_('ganio')||{}).value,
+      sitio:(_('gsit')||{}).value,
+      url:(_('gurl')||{}).value,
+      referencia:ref
+    });
+    if(res.success)toast('Referencia guardada en la nube ☁️','s');
+    else toast('Guardado localmente (sin conexión)','i');
+  } else {
+    toast('Referencia copiada (configura GAS para guardar)','i');
+  }
+  genCopy();
+}
+function genClear(){
+  ['gaut','gtit','ganio','gsit','gurl','gvol','gnum','gpags','gdoi'].forEach(function(id){var el=_(id);if(el)el.value='';});
+  genPrev();
+}
+
+// ═══════════════════════════════════════════════════════
+// DETECTOR APA
+// ═══════════════════════════════════════════════════════
+function detect(){
+  var text=((_('detinput')||{}).value||'').trim();
+  var res=_('detres');
+  if(!text||!res){toast('Pega una referencia primero','w');return;}
+  var errs=runDetect(text);
+  if(!errs.length){
+    res.innerHTML='<div class="dok"><div style="font-size:2.5rem;margin-bottom:7px">&#9989;</div>'+
+      '<h3 style="color:var(--grn);font-family:var(--fh);font-weight:900;margin-bottom:5px">Sin errores detectados</h3>'+
+      '<p style="color:var(--t2);font-size:.84rem">Cumple los patrones APA 7. Verifica cursiva y sangría visualmente.</p></div>';
+    return;
+  }
+  res.innerHTML='<p style="margin-bottom:8px"><span style="background:rgba(239,68,68,.15);color:var(--red);border:1px solid var(--red);padding:3px 12px;border-radius:20px;font-size:.77rem;font-weight:700">'+errs.length+' problema'+(errs.length>1?'s':'')+' detectado'+(errs.length>1?'s':'')+'</span></p>'+
+    errs.map(function(e){
+      return'<div class="derr '+(e.w?'w':'')+'">'+
+        '<div class="derr-t">'+(e.w?'&#128993;':'&#128308;')+' '+h(e.msg)+'</div>'+
+        '<div class="derr-f">&#128161; '+h(e.fix)+'</div>'+
+        (e.ex?'<div style="font-size:.76rem;color:var(--t3);margin-top:3px">Ej: '+h(e.ex)+'</div>':'')+
+        '</div>';
+    }).join('')+
+    '<p style="font-size:.74rem;color:var(--t3);margin-top:9px">Revisa el formato visual manualmente.</p>';
+}
+function runDetect(t){
+  var e=[];
+  if(/recuperado\s+de\b/i.test(t))e.push({msg:'"Recuperado de" no va en APA 7',fix:'Elimina esa frase — la URL va directamente',ex:'https://ejemplo.com'});
+  if(/\bdoi\s*:\s*10\./i.test(t)&&!/https?:\/\/doi\.org/i.test(t))e.push({msg:'DOI en formato antiguo',fix:'Usa: https://doi.org/10.XXXX',ex:'https://doi.org/10.1234/ej'});
+  if(!/\(\d{4}\)/.test(t)&&!/\(s\.f\.\)/i.test(t))e.push({msg:'No se detectó año entre paréntesis',fix:'El año siempre va entre paréntesis',ex:'García, J. (2024). Título...'});
+  if(/^[A-ZÁÉÍÓÚ][a-záéíóú]+,\s+[A-ZÁÉÍÓÚ][a-záéíóú]{3,}/.test(t.trim()))e.push({msg:'Posible nombre completo (usa solo inicial)',fix:'Reemplaza el nombre por su inicial',ex:'García, Juan → García, J.'});
+  if(/[A-Z][a-záéíóú]+\s*:\s*[A-Z][a-záéíóú]/.test(t))e.push({msg:'Posible lugar de publicación',fix:'APA 7 eliminó el lugar de publicación',ex:'México: UNAM → UNAM',w:true});
+  if(/https?:\/\/\S+\.$/.test(t))e.push({msg:'URL termina en punto',fix:'Elimina el punto al final de la URL'});
+  if(/\bpag\./i.test(t))e.push({msg:'"pag." no es correcto en APA 7',fix:'Usa "p." o "pp."',ex:'(García, 2020, p. 45)'});
+  if(/[A-ZÁÉÍÓÚ][a-z]+,\s+[A-Z]\.\s+y\s+[A-ZÁÉÍÓÚ][a-z]+,/.test(t))e.push({msg:'Usa "&" no "y" entre autores en referencias',fix:'Cambia "y" por "&"',ex:'García, J. y López → García, J., & López'});
+  return e;
+}
+function detclr(){var el=_('detinput');if(el)el.value='';var r=_('detres');if(r)r.innerHTML='<p style="color:var(--t3);font-size:.84rem">Pega tu referencia y presiona Analizar.</p>';}
+function setDex(el){var inp=_('detinput');if(inp)inp.value=el.dataset.text||'';detclr_r();}
+function detclr_r(){var r=_('detres');if(r)r.innerHTML='<p style="color:var(--t3);font-size:.84rem">Presiona "Analizar" para revisar.</p>';}
+
+// ═══════════════════════════════════════════════════════
+// CHATBOT CONVERSACIONAL — árbol de decisión
+// ═══════════════════════════════════════════════════════
+var CHAT_MSGS = [];   // historial visual
+var CHAT_NODE = null; // nodo actual del árbol
+
+// Árbol de conversación
+var CHAT_TREE = {
+  id: 'root',
+  bot: '¡Hola! 👋 Soy <strong>APA Mentor</strong>, tu asistente de Normas APA 7.<br>¿En qué puedo ayudarte hoy?',
+  opts: [
+    {label:'✏️ Citas en el texto',   next:'citas'},
+    {label:'📚 Referencias',          next:'referencias'},
+    {label:'📄 Formato del documento',next:'formato'},
+    {label:'⭐ Casos especiales',      next:'especiales'},
+    {label:'📊 Tablas y figuras',      next:'tablas'},
+  ]
+};
+
+var CHAT_NODES = {
+  root: CHAT_TREE,
+
+  // ── CITAS ─────────────────────────────────────────────
+  citas:{
+    id:'citas',
+    bot:'Entendido. ¿Qué tipo de cita necesitas?',
+    opts:[
+      {label:'👤 Un autor',                  next:'cita_1autor'},
+      {label:'👥 Dos autores',               next:'cita_2autores'},
+      {label:'👨‍👩‍👧 Tres o más autores',     next:'cita_3mas'},
+      {label:'📖 Cita directa corta (&lt;40 palabras)', next:'cita_directa_corta'},
+      {label:'📋 Cita en bloque (40+ palabras)',        next:'cita_bloque'},
+      {label:'💬 Paráfrasis',                next:'cita_parafrasis'},
+      {label:'🔙 Volver',                    next:'root'},
+    ]
+  },
+  cita_1autor:{
+    id:'cita_1autor',
+    bot:'<strong>Citar 1 autor:</strong><br><br>'+
+        '📌 <strong>Narrativa</strong> (autor como sujeto):<br>'+
+        '<em>García (2020) afirmó que...</em><br><br>'+
+        '📌 <strong>Parentética</strong> (al final):<br>'+
+        '<em>...(García, 2020)</em><br><br>'+
+        '📌 <strong>Con número de página:</strong><br>'+
+        '<em>García (2020) señaló que "frase exacta" (p. 45)</em><br>'+
+        '<em>...(García, 2020, p. 45)</em>',
+    opts:[
+      {label:'🤔 ¿Cómo cito con página?',next:'cita_paginas'},
+      {label:'🔙 Volver a Citas',         next:'citas'},
+      {label:'🏠 Inicio',                 next:'root'},
+    ]
+  },
+  cita_2autores:{
+    id:'cita_2autores',
+    bot:'<strong>Citar 2 autores:</strong><br><br>'+
+        '📌 <strong>Fuera del paréntesis</strong> usa <strong>y</strong>:<br>'+
+        '<em>García y López (2020) encontraron...</em><br><br>'+
+        '📌 <strong>Dentro del paréntesis</strong> usa <strong>&amp;</strong>:<br>'+
+        '<em>...(García &amp; López, 2020)</em><br><br>'+
+        '⚠️ Regla clave: <strong>y</strong> fuera · <strong>&amp;</strong> dentro',
+    opts:[
+      {label:'🔙 Volver a Citas',next:'citas'},
+      {label:'🏠 Inicio',        next:'root'},
+    ]
+  },
+  cita_3mas:{
+    id:'cita_3mas',
+    bot:'<strong>Citar 3 o más autores:</strong><br><br>'+
+        'Desde la <strong>primera mención</strong>, siempre usa <em>et al.</em>:<br><br>'+
+        '📌 <strong>Narrativa:</strong> <em>García et al. (2020)</em><br>'+
+        '📌 <strong>Parentética:</strong> <em>(García et al., 2020)</em><br><br>'+
+        '⚠️ Esto cambió en APA 7. En APA 6 se listaban todos los autores la primera vez.',
+    opts:[
+      {label:'📋 ¿Y en la lista de referencias?',next:'ref_multautores'},
+      {label:'🔙 Volver a Citas',               next:'citas'},
+      {label:'🏠 Inicio',                        next:'root'},
+    ]
+  },
+  cita_directa_corta:{
+    id:'cita_directa_corta',
+    bot:'<strong>Cita directa corta (&lt;40 palabras):</strong><br><br>'+
+        'Las palabras exactas del autor, <strong>entre comillas</strong>, en el párrafo.<br><br>'+
+        '📌 <em>García (2020) señaló que "la educación es transformadora" (p. 45).</em><br><br>'+
+        '📌 <em>"La educación es transformadora" (García, 2020, p. 45).</em><br><br>'+
+        '✅ Siempre incluye: apellido · año · número de página',
+    opts:[
+      {label:'📋 ¿Qué pasa con 40+ palabras?',next:'cita_bloque'},
+      {label:'🔢 ¿Cómo indico la página?',    next:'cita_paginas'},
+      {label:'🔙 Volver a Citas',              next:'citas'},
+      {label:'🏠 Inicio',                       next:'root'},
+    ]
+  },
+  cita_bloque:{
+    id:'cita_bloque',
+    bot:'<strong>Cita en bloque (40+ palabras):</strong><br><br>'+
+        '• Nueva línea con sangría de <strong>1.27 cm</strong><br>'+
+        '• <strong>Sin comillas</strong><br>'+
+        '• Interlineado doble<br>'+
+        '• El punto va <strong>ANTES</strong> del paréntesis:<br><br>'+
+        '<em>&nbsp;&nbsp;&nbsp;&nbsp;...texto del autor. (García, 2020, p. 45)</em>',
+    opts:[
+      {label:'🔙 Volver a Citas',next:'citas'},
+      {label:'🏠 Inicio',        next:'root'},
+    ]
+  },
+  cita_parafrasis:{
+    id:'cita_parafrasis',
+    bot:'<strong>Paráfrasis:</strong><br><br>'+
+        'Expresas la idea del autor con <strong>tus propias palabras</strong>. Sin comillas.<br><br>'+
+        '📌 <em>Según García (2020), la educación tiene el poder de transformar la sociedad.</em><br><br>'+
+        '✅ Requiere: apellido + año<br>'+
+        '✅ La página es recomendada pero no obligatoria<br><br>'+
+        '❌ Copiar el texto sin comillas ni cita = <strong>plagio</strong>',
+    opts:[
+      {label:'🔙 Volver a Citas',next:'citas'},
+      {label:'🏠 Inicio',        next:'root'},
+    ]
+  },
+  cita_paginas:{
+    id:'cita_paginas',
+    bot:'<strong>Indicar ubicación en las citas:</strong><br><br>'+
+        '📌 Una página: <strong>p. 45</strong><br>'+
+        '📌 Varias páginas: <strong>pp. 45–47</strong><br>'+
+        '📌 Sin páginas: <strong>párr. 3</strong><br><br>'+
+        '⚠️ En APA 7 se usa <strong>p.</strong> (no "pág." ni "pg.")',
+    opts:[
+      {label:'🔙 Volver a Citas',next:'citas'},
+      {label:'🏠 Inicio',        next:'root'},
+    ]
+  },
+
+  // ── REFERENCIAS ───────────────────────────────────────
+  referencias:{
+    id:'referencias',
+    bot:'¿Qué tipo de fuente quieres referenciar?',
+    opts:[
+      {label:'📚 Libro',              next:'ref_libro'},
+      {label:'📰 Artículo de revista',next:'ref_articulo'},
+      {label:'🌐 Página web',         next:'ref_web'},
+      {label:'▶️ Video de YouTube',   next:'ref_youtube'},
+      {label:'🎓 Tesis',              next:'ref_tesis'},
+      {label:'🔗 DOI y URLs',         next:'ref_doi'},
+      {label:'🔙 Volver',             next:'root'},
+    ]
+  },
+  ref_libro:{
+    id:'ref_libro',
+    bot:'<strong>Libro — APA 7:</strong><br><br>'+
+        '📌 <em>Apellido, I. (Año). <strong>Título en cursiva</strong>. Editorial.</em><br><br>'+
+        '✅ <em>García, J. A. (2020). <strong>Fundamentos de educación</strong>. UNAM.</em><br><br>'+
+        '⚠️ <strong>Ya NO va el lugar de publicación</strong> (ciudad, país).<br>'+
+        '⚠️ Solo la primera inicial del nombre.',
+    opts:[
+      {label:'👥 ¿Con varios autores?',      next:'ref_multautores'},
+      {label:'📖 ¿Capítulo de libro editado?',next:'ref_capitulo'},
+      {label:'🔙 Volver a Referencias',       next:'referencias'},
+      {label:'🏠 Inicio',                     next:'root'},
+    ]
+  },
+  ref_articulo:{
+    id:'ref_articulo',
+    bot:'<strong>Artículo de Revista — APA 7:</strong><br><br>'+
+        '📌 <em>Apellido, I. (Año). Título del artículo. <strong>Nombre Revista, Vol</strong>(Núm), pp–pp. https://doi.org/xxx</em><br><br>'+
+        '✅ <em>López, M. J. (2021). Aprendizaje activo. <strong>Revista Educación, 15</strong>(2), 34–48. https://doi.org/10.1234/re.2021</em><br><br>'+
+        '📌 En <strong>cursiva</strong>: nombre de la revista + número de volumen<br>'+
+        '📌 El número entre paréntesis NO va en cursiva',
+    opts:[
+      {label:'🔗 ¿Cómo pongo el DOI?',   next:'ref_doi'},
+      {label:'🔙 Volver a Referencias',   next:'referencias'},
+      {label:'🏠 Inicio',                 next:'root'},
+    ]
+  },
+  ref_web:{
+    id:'ref_web',
+    bot:'<strong>Página Web — APA 7:</strong><br><br>'+
+        '📌 Con autor:<br>'+
+        '<em>Apellido, I. (Año, día mes). <strong>Título</strong>. Sitio. URL</em><br><br>'+
+        '📌 Sin autor (el título va primero):<br>'+
+        '<em><strong>Título de la página</strong>. (Año). Sitio. URL</em><br><br>'+
+        '📌 Sin fecha: usa <strong>(s.f.)</strong><br><br>'+
+        '❌ NO escribir "Recuperado de" antes de la URL',
+    opts:[
+      {label:'❓ ¿Qué pongo si no hay fecha?',next:'ref_sf'},
+      {label:'🔙 Volver a Referencias',       next:'referencias'},
+      {label:'🏠 Inicio',                     next:'root'},
+    ]
+  },
+  ref_sf:{
+    id:'ref_sf',
+    bot:'<strong>Sin fecha de publicación:</strong><br><br>'+
+        'Usa <strong>(s.f.)</strong> donde iría el año:<br><br>'+
+        '📌 <em>García, J. A. (s.f.). <strong>Título</strong>. Sitio. URL</em><br><br>'+
+        'En el texto citas como: <em>(García, s.f.)</em><br><br>'+
+        '✅ Si hay año aproximado: <em>(ca. 2018)</em>',
+    opts:[
+      {label:'🔙 Volver a Referencias',next:'referencias'},
+      {label:'🏠 Inicio',              next:'root'},
+    ]
+  },
+  ref_youtube:{
+    id:'ref_youtube',
+    bot:'<strong>Video de YouTube — APA 7:</strong><br><br>'+
+        '📌 <em>Nombre del Canal. (Año, día mes). <strong>Título del video</strong> [Video]. YouTube. URL</em><br><br>'+
+        '✅ <em>APA Style. (2020, 15 octubre). <strong>Tutorial APA 7</strong> [Video]. YouTube. https://youtu.be/xxx</em>',
+    opts:[
+      {label:'🔙 Volver a Referencias',next:'referencias'},
+      {label:'🏠 Inicio',              next:'root'},
+    ]
+  },
+  ref_tesis:{
+    id:'ref_tesis',
+    bot:'<strong>Tesis — APA 7:</strong><br><br>'+
+        '📌 <em>Apellido, I. (Año). <strong>Título</strong> [Tesis de maestría/doctoral, Universidad]. Repositorio. URL</em><br><br>'+
+        '✅ <em>Ramírez, C. (2020). <strong>Educación inclusiva</strong> [Tesis doctoral, UNAM]. Repositorio UNAM. https://repositorio.unam.mx/xxx</em>',
+    opts:[
+      {label:'🔙 Volver a Referencias',next:'referencias'},
+      {label:'🏠 Inicio',              next:'root'},
+    ]
+  },
+  ref_doi:{
+    id:'ref_doi',
+    bot:'<strong>DOI y URLs en APA 7:</strong><br><br>'+
+        '📌 El DOI va como URL activa:<br>'+
+        '<strong>https://doi.org/10.XXXX/XXXX</strong><br><br>'+
+        '✅ Si el artículo tiene DOI → no incluyas la URL<br>'+
+        '✅ Sin DOI → incluye la URL de la página<br><br>'+
+        '❌ NO escribir "Recuperado de"<br>'+
+        '❌ NO poner punto al final del DOI/URL<br>'+
+        '❌ NO usar el formato antiguo: doi:10.xxx',
+    opts:[
+      {label:'🔙 Volver a Referencias',next:'referencias'},
+      {label:'🏠 Inicio',              next:'root'},
+    ]
+  },
+  ref_multautores:{
+    id:'ref_multautores',
+    bot:'<strong>Múltiples autores en referencias:</strong><br><br>'+
+        '📌 <strong>2 autores:</strong><br>'+
+        '<em>García, J. A., &amp; López, M. (2020).</em><br><br>'+
+        '📌 <strong>3–20 autores:</strong> se listan todos<br>'+
+        '<em>García, J. A., López, M., &amp; Martínez, C. (2020).</em><br><br>'+
+        '📌 <strong>21+ autores:</strong><br>'+
+        'Los primeros 19, puntos suspensivos (...), luego el último.',
+    opts:[
+      {label:'🔙 Volver a Referencias',next:'referencias'},
+      {label:'🏠 Inicio',              next:'root'},
+    ]
+  },
+  ref_capitulo:{
+    id:'ref_capitulo',
+    bot:'<strong>Capítulo en libro editado — APA 7:</strong><br><br>'+
+        '📌 <em>Apellido, I. (Año). Título del capítulo. En I. Editor (Ed.), <strong>Título del libro</strong> (pp. XX–XX). Editorial.</em><br><br>'+
+        '✅ <em>Soto, P. (2021). Aprendizaje activo. En M. López (Ed.), <strong>Pedagogía contemporánea</strong> (pp. 45–67). UNAM.</em>',
+    opts:[
+      {label:'🔙 Volver a Referencias',next:'referencias'},
+      {label:'🏠 Inicio',              next:'root'},
+    ]
+  },
+
+  // ── FORMATO ───────────────────────────────────────────
+  formato:{
+    id:'formato',
+    bot:'¿Qué aspecto del formato necesitas?',
+    opts:[
+      {label:'📐 Márgenes, fuente e interlineado',next:'formato_basico'},
+      {label:'📑 Niveles de encabezado',           next:'formato_encabezados'},
+      {label:'📝 Sangría y párrafos',              next:'formato_sangria'},
+      {label:'🔢 Numeración de páginas',           next:'formato_paginas'},
+      {label:'🔙 Volver',                          next:'root'},
+    ]
+  },
+  formato_basico:{
+    id:'formato_basico',
+    bot:'<strong>Configuración básica APA 7:</strong><br><br>'+
+        '📐 <strong>Márgenes:</strong> 2.54 cm en todos los lados<br>'+
+        '🔤 <strong>Fuentes aceptadas:</strong><br>'+
+        '&nbsp;&nbsp;&nbsp;• Arial 11pt<br>'+
+        '&nbsp;&nbsp;&nbsp;• Times New Roman 12pt<br>'+
+        '&nbsp;&nbsp;&nbsp;• Calibri 11pt<br>'+
+        '↕️ <strong>Interlineado:</strong> doble en todo el documento<br>'+
+        '📑 <strong>Alineación:</strong> izquierda (no justificado)',
+    opts:[
+      {label:'🔙 Volver a Formato',next:'formato'},
+      {label:'🏠 Inicio',          next:'root'},
+    ]
+  },
+  formato_encabezados:{
+    id:'formato_encabezados',
+    bot:'<strong>Niveles de Encabezado APA 7:</strong><br><br>'+
+        '<strong>Nivel 1:</strong> Centrado, negrita<br>'+
+        '<strong>Nivel 2:</strong> Alineado a la izquierda, negrita<br>'+
+        '<strong>Nivel 3:</strong> Izquierda, negrita cursiva<br>'+
+        '<strong>Nivel 4:</strong> Sangría, negrita, termina en punto.<br>'+
+        '<strong>Nivel 5:</strong> Sangría, negrita cursiva, termina en punto.',
+    opts:[
+      {label:'🔙 Volver a Formato',next:'formato'},
+      {label:'🏠 Inicio',          next:'root'},
+    ]
+  },
+  formato_sangria:{
+    id:'formato_sangria',
+    bot:'<strong>Sangría y Párrafos APA 7:</strong><br><br>'+
+        '📌 <strong>Sangría de párrafo:</strong> 1.27 cm al inicio de cada párrafo<br>'+
+        '📌 <strong>Sangría francesa</strong> (referencias): primera línea al margen, resto sangrado 1.27 cm<br>'+
+        '📌 <strong>No dejar espacio extra</strong> entre párrafos<br>'+
+        '📌 <strong>No usar doble Enter</strong> entre párrafos (usa solo interlineado doble)',
+    opts:[
+      {label:'🔙 Volver a Formato',next:'formato'},
+      {label:'🏠 Inicio',          next:'root'},
+    ]
+  },
+  formato_paginas:{
+    id:'formato_paginas',
+    bot:'<strong>Numeración de Páginas APA 7:</strong><br><br>'+
+        '📌 Número en el <strong>encabezado</strong>, esquina <strong>superior derecha</strong><br>'+
+        '📌 Comienza desde la portada (página 1)<br>'+
+        '📌 Fuente igual al resto del documento<br><br>'+
+        '⚠️ El <em>running head</em> solo es obligatorio en manuscritos para publicación',
+    opts:[
+      {label:'🔙 Volver a Formato',next:'formato'},
+      {label:'🏠 Inicio',          next:'root'},
+    ]
+  },
+
+  // ── TABLAS Y FIGURAS ──────────────────────────────────
+  tablas:{
+    id:'tablas',
+    bot:'¿Sobre tablas o figuras?',
+    opts:[
+      {label:'📊 Tablas (número y título arriba)',   next:'tablas_info'},
+      {label:'🖼️ Figuras (número y título abajo)',  next:'figuras_info'},
+      {label:'📝 Notas en tablas y figuras',         next:'tablas_notas'},
+      {label:'🔙 Volver',                            next:'root'},
+    ]
+  },
+  tablas_info:{
+    id:'tablas_info',
+    bot:'<strong>Tablas en APA 7 — número y título ARRIBA:</strong><br><br>'+
+        '<strong>Tabla 1</strong> ← en negrita<br>'+
+        '<em>Título descriptivo de la tabla</em> ← en cursiva<br>'+
+        '[contenido de la tabla]<br>'+
+        '<em>Nota.</em> Información adicional.',
+    opts:[
+      {label:'🔙 Volver a Tablas/Figuras',next:'tablas'},
+      {label:'🏠 Inicio',                 next:'root'},
+    ]
+  },
+  figuras_info:{
+    id:'figuras_info',
+    bot:'<strong>Figuras en APA 7 — número y título ABAJO:</strong><br><br>'+
+        '[imagen o gráfico]<br>'+
+        '<strong>Figura 1</strong> ← en negrita<br>'+
+        '<em>Título descriptivo de la figura</em> ← en cursiva<br>'+
+        '<em>Nota.</em> Fuente u otra información.',
+    opts:[
+      {label:'🔙 Volver a Tablas/Figuras',next:'tablas'},
+      {label:'🏠 Inicio',                 next:'root'},
+    ]
+  },
+  tablas_notas:{
+    id:'tablas_notas',
+    bot:'<strong>Notas en Tablas y Figuras APA 7:</strong><br><br>'+
+        'Las notas empiezan con <em>Nota.</em> en cursiva, seguido de punto.<br><br>'+
+        'Tipos de notas:<br>'+
+        '📌 <strong>General:</strong> explica la tabla/figura en general<br>'+
+        '📌 <strong>Específica:</strong> con superíndice (<sup>a</sup>) para columna/fila específica<br>'+
+        '📌 <strong>Probabilidad:</strong> * p &lt; .05  ** p &lt; .01',
+    opts:[
+      {label:'🔙 Volver a Tablas/Figuras',next:'tablas'},
+      {label:'🏠 Inicio',                 next:'root'},
+    ]
+  },
+
+  // ── CASOS ESPECIALES ──────────────────────────────────
+  especiales:{
+    id:'especiales',
+    bot:'¿Qué caso especial necesitas?',
+    opts:[
+      {label:'🏢 Organización como autor',    next:'esp_org'},
+      {label:'📧 Comunicación personal',      next:'esp_comm'},
+      {label:'📖 Fuente secundaria',           next:'esp_secundaria'},
+      {label:'❓ Sin autor o sin fecha',       next:'esp_saf'},
+      {label:'⚠️ Errores más comunes',         next:'esp_errores'},
+      {label:'🔙 Volver',                      next:'root'},
+    ]
+  },
+  esp_org:{
+    id:'esp_org',
+    bot:'<strong>Organización como autor:</strong><br><br>'+
+        '📌 <strong>Primera mención</strong> (nombre completo + abreviatura):<br>'+
+        '<em>Organización Mundial de la Salud [OMS] (2020)</em><br><br>'+
+        '📌 <strong>Citas siguientes</strong> (solo abreviatura):<br>'+
+        '<em>OMS (2020)</em><br><br>'+
+        '📌 <strong>En referencias</strong>, siempre el nombre completo:<br>'+
+        '<em>Organización Mundial de la Salud. (2020). Título. URL</em>',
+    opts:[
+      {label:'🔙 Volver a Casos especiales',next:'especiales'},
+      {label:'🏠 Inicio',                   next:'root'},
+    ]
+  },
+  esp_comm:{
+    id:'esp_comm',
+    bot:'<strong>Comunicación personal</strong> (emails, entrevistas, mensajes):<br><br>'+
+        '📌 <strong>Solo en el texto</strong>, NUNCA en la lista de referencias:<br>'+
+        '<em>(J. García, comunicación personal, 5 de marzo de 2021)</em><br><br>'+
+        '✅ Porque el lector no puede recuperar esa fuente.',
+    opts:[
+      {label:'🔙 Volver a Casos especiales',next:'especiales'},
+      {label:'🏠 Inicio',                   next:'root'},
+    ]
+  },
+  esp_secundaria:{
+    id:'esp_secundaria',
+    bot:'<strong>Fuente secundaria</strong> (un autor citado dentro de otro texto):<br><br>'+
+        '📌 En el texto:<br>'+
+        '<em>García (2018, como se citó en López, 2021) demostró que...</em><br><br>'+
+        '📌 En referencias: solo incluyes <strong>la fuente que leíste</strong> (López, 2021), NO la original.<br><br>'+
+        '⚠️ Úsala solo cuando no puedas obtener el original.',
+    opts:[
+      {label:'🔙 Volver a Casos especiales',next:'especiales'},
+      {label:'🏠 Inicio',                   next:'root'},
+    ]
+  },
+  esp_saf:{
+    id:'esp_saf',
+    bot:'<strong>Sin autor / Sin fecha:</strong><br><br>'+
+        '📌 <strong>Sin autor</strong> — en el texto:<br>'+
+        '<em>("Primeras palabras del título", año)</em><br><br>'+
+        '📌 <strong>Sin fecha</strong>: usa <strong>(s.f.)</strong><br>'+
+        '<em>García, J. A. (s.f.). Título. Editorial.</em><br>'+
+        '<em>En texto: (García, s.f.)</em><br><br>'+
+        '📌 <strong>Sin autor ni fecha:</strong><br>'+
+        '<em>("Primeras palabras", s.f.)</em>',
+    opts:[
+      {label:'🔙 Volver a Casos especiales',next:'especiales'},
+      {label:'🏠 Inicio',                   next:'root'},
+    ]
+  },
+  esp_errores:{
+    id:'esp_errores',
+    bot:'<strong>Errores más comunes en APA 7:</strong><br><br>'+
+        '❌ García, Juan → ✅ García, J.<br>'+
+        '❌ García & López (2020) dijeron → ✅ García y López (2020)<br>'+
+        '❌ (García y López, 2020) → ✅ (García & López, 2020)<br>'+
+        '❌ Recuperado de https://... → ✅ https://...<br>'+
+        '❌ México: UNAM → ✅ UNAM<br>'+
+        '❌ doi:10.xxx → ✅ https://doi.org/10.xxx<br>'+
+        '❌ pág. 45 → ✅ p. 45',
+    opts:[
+      {label:'🔙 Volver a Casos especiales',next:'especiales'},
+      {label:'🏠 Inicio',                   next:'root'},
+    ]
+  },
+};
+
+// ── Renderizar chat ────────────────────────────────────
+function rchat(){
+  var c=_('cmsgs'); if(!c)return;
+  // Si es la primera vez, mostrar bienvenida
+  if(CHAT_MSGS.length===0){
+    CHAT_NODE='root';
+    chatShowNode('root');
+  } else {
+    // Re-renderizar mensajes existentes
+    var html='';
+    CHAT_MSGS.forEach(function(m){html+=m.html;});
+    c.innerHTML=html;
+    c.scrollTop=c.scrollHeight;
+  }
+}
+
+function chatShowNode(nodeId){
+  var node=CHAT_NODES[nodeId]; if(!node)return;
+  CHAT_NODE=nodeId;
+  // Añadir mensaje del bot
+  var botHtml='<div class="cmsg cbot">'+
+    '<span class="cavi">🤖</span>'+
+    '<div class="cbubble">'+node.bot+'</div></div>';
+  CHAT_MSGS.push({html:botHtml});
+  // Opciones
+  if(node.opts&&node.opts.length){
+    var optsHtml='<div class="copts">';
+    node.opts.forEach(function(opt,i){
+      optsHtml+='<button class="copt" data-next="'+opt.next+'" onclick="chatPick(this.dataset.next,'+JSON.stringify(opt.label).replace(/</g,'&lt;').replace(/>/g,'&gt;')+')">'+opt.label+'</button>';
+    });
+    optsHtml+='</div>';
+    CHAT_MSGS.push({html:optsHtml, isOpts:true});
+  }
+  var c=_('cmsgs'); if(!c)return;
+  var html=''; CHAT_MSGS.forEach(function(m){html+=m.html;});
+  c.innerHTML=html;
+  c.scrollTop=c.scrollHeight;
+  // Marcar opts anteriores como usadas (solo las últimas son activas)
+  var allOptDivs=c.querySelectorAll('.copts');
+  for(var i=0;i<allOptDivs.length-1;i++){
+    allOptDivs[i].style.opacity='0.4';
+    allOptDivs[i].style.pointerEvents='none';
+  }
+}
+
+function chatPick(nextId, label){
+  // Mostrar respuesta del usuario
+  var userHtml='<div class="cmsg cuser">'+
+    '<div class="cububble">'+h(label)+'</div></div>';
+  // Reemplazar los opts actuales
+  var c=_('cmsgs'); if(!c)return;
+  // Desactivar todos los opts
+  c.querySelectorAll('.copts').forEach(function(d){
+    d.style.opacity='0.4'; d.style.pointerEvents='none';
+  });
+  CHAT_MSGS.push({html:userHtml});
+  var html=''; CHAT_MSGS.forEach(function(m){html+=m.html;});
+  c.innerHTML=html;
+  c.scrollTop=c.scrollHeight;
+  // Ir al nodo siguiente
+  setTimeout(function(){ chatShowNode(nextId); }, 350);
+}
+
+function chatSearch(){
+  var inp=_('cin'); if(!inp)return;
+  var term=inp.value.trim().toLowerCase();
+  if(!term)return;
+  inp.value='';
+  // Mostrar mensaje del usuario
+  var userHtml='<div class="cmsg cuser"><div class="cububble">'+h(inp.value||term)+'</div></div>';
+  CHAT_MSGS.push({html:userHtml});
+  // Buscar en el árbol
+  var results=[];
+  Object.values(CHAT_NODES).forEach(function(node){
+    if(node.bot.toLowerCase().includes(term)||
+       (node.opts||[]).some(function(o){return o.label.toLowerCase().includes(term);})){
+      results.push(node);
+    }
+  });
+  var botHtml;
+  if(results.length===0){
+    botHtml='<div class="cmsg cbot"><span class="cavi">🤖</span>'+
+      '<div class="cbubble">No encontré resultados para "<strong>'+h(term)+'</strong>". ¿Puedes ser más específico? O explora las categorías:</div></div>';
+    CHAT_MSGS.push({html:botHtml});
+    // Mostrar opciones del nodo raíz
+    setTimeout(function(){chatShowNode('root');}, 350);
+  } else {
+    var optsHtml='<div class="cmsg cbot"><span class="cavi">🤖</span>'+
+      '<div class="cbubble">Encontré '+results.length+' resultado(s) relacionado(s). ¿Cuál te interesa?</div></div>';
+    CHAT_MSGS.push({html:optsHtml});
+    var btns='<div class="copts">';
+    results.slice(0,4).forEach(function(node){
+      btns+='<button class="copt" data-next="'+node.id+'" onclick="chatPick(this.dataset.next,\'Ver respuesta\')">'+
+        node.id.replace(/_/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase();})+
+        '</button>';
+    });
+    btns+='<button class="copt" data-next="root" onclick="chatPick(\'root\',\'Volver al inicio\')">🏠 Inicio</button>';
+    btns+='</div>';
+    CHAT_MSGS.push({html:btns,isOpts:true});
+  }
+  var c=_('cmsgs'); if(!c)return;
+  var html=''; CHAT_MSGS.forEach(function(m){html+=m.html;});
+  c.innerHTML=html;
+  c.scrollTop=c.scrollHeight;
+}
+
+function chatclr(){
+  CHAT_MSGS=[];
+  CHAT_NODE=null;
+  var c=_('cmsgs'); if(c)c.innerHTML='';
+  rchat();
+}
+
+// ═══════════════════════════════════════════════════════
+// PERFIL
+// ═══════════════════════════════════════════════════════
+async function rprof(){
+  if(!U)return;
+  _('pavt').textContent=U.nombre.substring(0,2).toUpperCase();
+  _('pname').textContent=U.nombre;
+  _('pemail').textContent=U.correo||'';
+  _('pxp').textContent=U.xp_total||0;
+  _('pstr').textContent=(U.racha_actual||0)+' días';
+  showGasStatus();
+  var total=APA_DATA.niveles.reduce(function(s,n){return s+n.lecciones.length;},0);
+  var perf=P.filter(function(p){
+    var done=p.completada===true||p.completada==='TRUE'||p.completada==='true'||p.c===true;
+    return done&&parseInt(p.porcentaje||p.p||0)===100;
+  }).length;
+  _('pdone').textContent=perf+'/'+total;
+  // Stats
+  if(GAS_OK){
+    var sr=await API.getStats(U.id).catch(function(){return null;});
+    if(sr&&sr.success){
+      _('ptq').textContent=sr.data.total||0;
+      _('pcq').textContent=sr.data.correct||0;
+      _('pprec').textContent=(sr.data.precision||0)+'%';
+    }
+  } else {
+    var tq=ANS.length,cq=ANS.filter(function(a){return a.ok||a.es_correcta;}).length;
+    _('ptq').textContent=tq;_('pcq').textContent=cq;
+    _('pprec').textContent=(tq?Math.round(cq/tq*100):0)+'%';
+  }
+  _('pxp2').textContent=U.xp_total||0;
+  // Insignias
+  var bg=_('bdggrid'); if(!bg)return;
+  var earned=getBdg();
+  if(GAS_OK){
+    var br=await API.getUserBadges(U.id).catch(function(){return null;});
+    if(br&&br.success){
+      br.data.forEach(function(b){earned.add(String(b.id_insignia));});
+    }
+  }
+  bg.innerHTML=APA_DATA.insignias.map(function(b){
+    var ok=earned.has(String(b.id));
+    return'<div class="bdg '+(ok?'e':'l')+'" title="'+h(b.descripcion)+'">'+
+      '<div class="bdgi">'+(ok?b.icono:'&#128274;')+'</div>'+
+      '<div class="bdgn">'+h(b.nombre)+'</div>'+
+      '<div class="bdgd">'+h(b.descripcion)+'</div></div>';
+  }).join('');
+}
+
+async function savNm(){
+  var inp=_('pnin'); if(!inp)return;
+  var n=inp.value.trim(); if(!n){toast('Ingresa un nombre','e');return;}
+  U.nombre=n; lsSet('apa_user',U);
+  if(GAS_OK)await API.updateUser(U.id,n).catch(function(){});
+  // Actualizar local users
+  var users=getLocalUsers();
+  var idx=users.findIndex(function(x){return x.id===U.id;});
+  if(idx>=0){users[idx].nombre=n; saveLocalUsers(users);}
+  toast('Nombre actualizado!','s');
+  rprof(); updSb();
+  _('tbgreet').textContent='¡Hola, '+n.split(' ')[0]+'! 👋';
+}
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+(function(){
+  var sid=lsGet('apa_sid');
+  if(sid){
+    var stored=lsGet('apa_user');
+    if(stored&&stored.id===sid){
+      U=stored;
+      P=getLP(U.id);
+      ANS=getLA(U.id);
+      _('pg-auth').style.display='none';
+      _('pg-app').style.display='block';
+      _('bnav').classList.add('sh');
+      // Intentar refrescar desde GAS en background
+      if(API.isConfigured()){
+        API.getUser(U.id).then(function(r){
+          if(r&&r.success){
+            U=r.data; lsSet('apa_user',U); GAS_OK=true;
+            return API.getProgress(U.id);
+          }
+        }).then(function(pr){
+          if(pr&&pr.success){P=pr.data; saveLP(U.id,P);}
+          return API.checkStreak(U.id);
+        }).then(function(sr){
+          if(sr&&sr.success){U.racha_actual=sr.data.racha; lsSet('apa_user',U);}
+          go('v-dash');
+          showGasStatus();
+        }).catch(function(){go('v-dash');});
+      } else {
+        go('v-dash');
+      }
+      return;
+    }
+  }
+  // Sin sesión guardada — mostrar auth
+})();
+</script>
+</body>
+</html>
