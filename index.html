@@ -1859,7 +1859,7 @@ function chatShowNode(nodeId){
   if(node.opts&&node.opts.length){
     var optsHtml='<div class="copts">';
     node.opts.forEach(function(opt,i){
-      optsHtml+='<button class="copt" data-next="'+opt.next+'" onclick="chatPick(this.dataset.next,'+JSON.stringify(opt.label).replace(/</g,'&lt;').replace(/>/g,'&gt;')+')">'+opt.label+'</button>';
+      optsHtml+='<button class="copt" data-next="'+opt.next+'" data-label="'+opt.label.replace(/"/g,'&quot;')+'" onclick="chatPick(this.dataset.next,this.dataset.label)">'+opt.label+'</button>';
     });
     optsHtml+='</div>';
     CHAT_MSGS.push({html:optsHtml, isOpts:true});
@@ -1923,11 +1923,11 @@ function chatSearch(){
     CHAT_MSGS.push({html:optsHtml});
     var btns='<div class="copts">';
     results.slice(0,4).forEach(function(node){
-      btns+='<button class="copt" data-next="'+node.id+'" onclick="chatPick(this.dataset.next,\'Ver respuesta\')">'+
+      btns+='<button class="copt" data-next="'+node.id+'" data-label="Ver resultado" onclick="chatPick(this.dataset.next,this.dataset.label)">'+
         node.id.replace(/_/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase();})+
         '</button>';
     });
-    btns+='<button class="copt" data-next="root" onclick="chatPick(\'root\',\'Volver al inicio\')">🏠 Inicio</button>';
+    btns+='<button class="copt" data-next="root" data-label="Inicio" onclick="chatPick(this.dataset.next,this.dataset.label)">🏠 Inicio</button>';
     btns+='</div>';
     CHAT_MSGS.push({html:btns,isOpts:true});
   }
