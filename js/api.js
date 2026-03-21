@@ -6,7 +6,7 @@
  */
 
 // ⚙️  CAMBIA ESTO por tu URL de Google Apps Script desplegado
-const GAS_URL = 'https://script.google.com/macros/s/PEGA_TU_URL_AQUI/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxaXxOv5Zjgix2UDTsa4uupuuU6fQA2KqRKR-JKLRhuK6fht23BuPBu7S5Y3Pb3WoCK/exec';
 
 const API = {
   async call(action, params = {}) {
